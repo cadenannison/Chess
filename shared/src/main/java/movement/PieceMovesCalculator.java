@@ -13,11 +13,19 @@ public interface PieceMovesCalculator {
         ChessPiece currentPiece = board.getPiece(start);
         ChessGame.TeamColor teamColor = currentPiece.getTeamColor();
 
-        for ()
+        for (int[] eachDirection : directions){
+            boolean endSpot = false;
+            int spacesMoved = 0;
 
-//        boolean finalPosition = false;
-//        while (!finalPosition) {
+            while (!endSpot){
+                spacesMoved++;
 
+                if (ChessBoard.(eachDirection+spacesMoved)) {
+                    break;
+                }
+                movesList += directions;
+
+            }
         }
     }
 }

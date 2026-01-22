@@ -1,5 +1,7 @@
 package chess;
 
+import movement.*;
+
 import java.util.Collection;
 import java.util.List;
 
@@ -52,9 +54,29 @@ public class ChessPiece {
      *
      * @return Collection of valid moves
      */
-    public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        ChessPiece piece = board.getPiece(myPosition);
+    public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myStartPosition) {
+        ChessPiece piece = board.getPiece(myStartPosition);
+        switch (piece)
+        {
+            case KING:
+                return KingMovesCalculator.makeMoves(board, myStartPosition);
+                break;
+            case QUEEN:
+                return QueenMovesCalculator.makeMoves(board, myStartPosition);
+                break;
+            case BISHOP:
+                return BishopMovesCalculator.makeMoves(board, myStartPosition);
+                break;
+            case KNIGHT:
+                return KnightMovesCalculator.makeMoves(board, myStartPosition);
+                break;
+            case ROOK:
+                return RookMovesCalculator.makeMoves(board, myStartPosition);
+                break;
+            case PAWN:
 
+                break;
+        }
 //        if (piece.getPieceType() == PieceType.BISHOP) {
 //            return PieceMovesCalculator();
 //

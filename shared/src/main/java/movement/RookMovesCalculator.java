@@ -6,7 +6,7 @@ import chess.ChessPosition;
 
 import java.util.List;
 
-public class KingMovesCalculator implements PieceMovesCalculator{
+public class RookMovesCalculator implements PieceMovesCalculator{
 
     public static List<ChessMove> makeMoves(ChessBoard board, ChessPosition start) {
         int[][] theDirections = {{1,1}};

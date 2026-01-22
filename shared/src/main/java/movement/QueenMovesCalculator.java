@@ -9,7 +9,7 @@ import java.util.List;
 public class QueenMovesCalculator implements PieceMovesCalculator{
 
     public static List<ChessMove> makeMoves(ChessBoard board, ChessPosition start) {
-        int[][] theDirections = {};
+        int[][] theDirections = {{1,0}, {1,1}, {0,1}, {-1,1}, {-1,0}, {-1,-1}, {0,-1}, {1,-1}};
         return PieceMovesCalculator.possibleMoves(board, start, theDirections);
     }
 }

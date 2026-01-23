@@ -72,13 +72,5 @@ public class ChessPiece {
             default:
                 return null;
         }
-//        if (piece.getPieceType() == PieceType.BISHOP) {
-//            return PieceMovesCalculator();
-//
-//        }
-
-
-
-        return List.of();
     }
 }

@@ -24,7 +24,7 @@ public interface PieceMovesCalculator {
                 col += eachDirection[0] * spacesMoved;
                 ChessPosition newPos = new ChessPosition(row, col);
 
-                if (outOfBounds(newPos) == false) {
+                if (outOfBounds(newPos) == true) {
                     break;
                 }
 
@@ -47,11 +47,13 @@ public interface PieceMovesCalculator {
     }
 
     static boolean outOfBounds(ChessPosition chessPos){
-        if (chessPos.getColumn() > 8 && chessPos.getColumn() < 1 && chessPos.getRow() > 8 && chessPos.getRow() < 1){
-            return false;
+        int col = chessPos.getColumn();
+        int row = chessPos.getRow();
+        if (row >= 8 || row <= 1 || col >= 8 || col <= 1){
+            return true;
         }
         else {
-            return true;
+            return false;
         }
 
     }

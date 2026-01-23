@@ -49,12 +49,6 @@ public interface PieceMovesCalculator {
     static boolean outOfBounds(ChessPosition chessPos){
         int col = chessPos.getColumn();
         int row = chessPos.getRow();
-        if (row >= 8 || row <= 1 || col >= 8 || col <= 1){
-            return true;
-        }
-        else {
-            return false;
-        }
-
+        return row > 8 || row < 1 || col > 8 || col < 1;
     }
 }

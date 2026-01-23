@@ -69,7 +69,7 @@ public class ChessPiece {
             case PieceType.ROOK:
                 return RookMovesCalculator.makeMoves(board, myStartPosition);
             case PieceType.PAWN:
-                return null;
+                return PawnMovesCalculator.makeMoves(board, myStartPosition);
             default:
                 return null;
         }

@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface PieceMovesCalculator {
 
-    static List<ChessMove> possibleMoves(ChessBoard board, ChessPosition start, int[][] directions) {
+    static List<ChessMove> possibleMoves(ChessBoard board, ChessPosition start, int[][] directions, boolean moveUnlimited) {
         List<ChessMove> movesList = new ArrayList<>();
         ChessPiece currentPiece = board.getPiece(start);
         ChessGame.TeamColor teamColor = currentPiece.getTeamColor();
@@ -38,6 +38,9 @@ public interface PieceMovesCalculator {
                     endSpot = true;
                 }
                 else {
+                    endSpot = true;
+                }
+                if (moveUnlimited == false) {
                     endSpot = true;
                 }
                 spacesMoved++;

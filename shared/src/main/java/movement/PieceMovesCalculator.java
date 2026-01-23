@@ -23,12 +23,15 @@ public interface PieceMovesCalculator {
                 row += eachDirection[1] * spacesMoved;
                 col += eachDirection[0] * spacesMoved;
                 ChessPosition newPos = new ChessPosition(row, col);
+                ChessPiece finPiece = board.getPiece(newPos);
 
-                if () {
-                    ;
+                if (finPiece == null) {
+                    movesList.add(new ChessMove(start, newPos, null));
                 }
-                spacesMoved++;
-                movesList += directions;
+                else if (finPiece.getTeamColor() != teamColor) {
+                    movesList.add(new ChessMove(start, newPos, null));
+                    endSpot = true;
+                }
 
             }
         }

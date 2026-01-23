@@ -15,14 +15,19 @@ public interface PieceMovesCalculator {
 
         for (int[] eachDirection : directions){
             boolean endSpot = false;
-            int spacesMoved = 0;
+            int spacesMoved = 1;
 
             while (!endSpot){
-                spacesMoved++;
+                int row = start.getRow();
+                int col = start.getColumn();
+                row += eachDirection[1] * spacesMoved;
+                col += eachDirection[0] * spacesMoved;
+                ChessPosition newPos = new ChessPosition(row, col);
 
-                if (ChessBoard.(eachDirection+spacesMoved)) {
-                    break;
+                if () {
+                    ;
                 }
+                spacesMoved++;
                 movesList += directions;
 
             }

@@ -55,27 +55,22 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myStartPosition) {
-        ChessPiece piece = board.getPiece(myStartPosition);
-        switch (piece)
+        switch (type)
         {
             case PieceType.KING:
                 return KingMovesCalculator.makeMoves(board, myStartPosition);
-                break;
             case PieceType.QUEEN:
                 return QueenMovesCalculator.makeMoves(board, myStartPosition);
-                break;
             case PieceType.BISHOP:
                 return BishopMovesCalculator.makeMoves(board, myStartPosition);
-                break;
             case PieceType.KNIGHT:
                 return KnightMovesCalculator.makeMoves(board, myStartPosition);
-                break;
             case PieceType.ROOK:
                 return RookMovesCalculator.makeMoves(board, myStartPosition);
-                break;
             case PieceType.PAWN:
-
-                break;
+                return null;
+            default:
+                return null;
         }
 //        if (piece.getPieceType() == PieceType.BISHOP) {
 //            return PieceMovesCalculator();

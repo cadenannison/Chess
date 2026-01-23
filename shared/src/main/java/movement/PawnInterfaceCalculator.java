@@ -22,7 +22,7 @@ public interface PawnInterfaceCalculator extends PieceMovesCalculator{
         ChessPosition pawnPos = new ChessPosition(row + direction, col);
 
         if (PieceMovesCalculator.outOfBounds(pawnPos) == false && board.getPiece(pawnPos) == null) {
-            pawnMoves.add(new ChessMove(start, pawnPos, null));
+            promotionCheck(board, start, pawnMoves, pawnPos, teamColor);
         }
 
         if (start.getRow() == 2 && teamColor == ChessGame.TeamColor.WHITE) {
@@ -49,17 +49,32 @@ public interface PawnInterfaceCalculator extends PieceMovesCalculator{
             if (PieceMovesCalculator.outOfBounds(pawnDiagonalCheck) == false) {
                 ChessPiece pawnAttack = board.getPiece(pawnDiagonalCheck);
                 if (pawnAttack != null && pawnAttack.getTeamColor() != teamColor){
-                    pawnMoves.add(new ChessMove(start, pawnDiagonalCheck, null));
+                    promotionCheck(board, start, pawnMoves, pawnDiagonalCheck, teamColor);
                 }
             }
         }
 
-        if (pawn)
-
         return pawnMoves;
     }
 
+    private static void promotionCheck(ChessBoard board, ChessPosition start, List<ChessMove> promotionSpot, ChessPosition end, ChessGame.TeamColor teamColor) {
+        int promote;
 
-
+        if (teamColor == ChessGame.TeamColor.BLACK) {
+            promote = 1;
+        }
+        else {
+            promote = 8;
+        }
+        if (promote == end.getRow()) {
+            promotionSpot.add(new ChessMove(start, end, ChessPiece.PieceType.BISHOP));
+            promotionSpot.add(new ChessMove(start, end, ChessPiece.PieceType.QUEEN));
+            promotionSpot.add(new ChessMove(start, end, ChessPiece.PieceType.ROOK));
+            promotionSpot.add(new ChessMove(start, end, ChessPiece.PieceType.KNIGHT));
+        }
+        else {
+            promotionSpot.add(new ChessMove(start, end, null));
+        }
+    }
 
 }

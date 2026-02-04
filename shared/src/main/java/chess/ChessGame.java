@@ -1,5 +1,6 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -13,7 +14,6 @@ public class ChessGame {
 
     ChessBoard board;
     TeamColor teamTurn;
-    Collection<ChessMove> validMoves;
 
     public ChessGame() {
         board = new ChessBoard();
@@ -54,8 +54,12 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
+        List<ChessMove> validChessMoves = new ArrayList<>();
+        // get all moves for that chess piece,
+        // simulate move, then check if king is in check
+        // if not, then add to list
 
-        return validMoves;
+        return validChessMoves;
     }
 
     /**
@@ -78,11 +82,11 @@ public class ChessGame {
         int rowNumber = 1;
         for (ChessPiece[] row : board.squares) { // check each row
             int columnNumber = 1;
-            for (ChessPiece piece : row) { // check each postion in that row
-                if (piece != null && piece.getTeamColor() != teamColor) {
-                    for (ChessMove piecePossibleMove : piece.pieceMoves(board, new ChessPosition(rowNumber, columnNumber))){
-                        ChessPosition endSpot = piecePossibleMove.getEndPosition();
-                        if (board.getPiece(endSpot) != null && board.getPiece(endSpot).getPieceType() == ChessPiece.PieceType.KING){
+            for (ChessPiece piece : row) { // check each col in that row
+                if (piece != null && piece.getTeamColor() != teamColor) { //as long as the piece isn't null and is opposite color
+                    for (ChessMove piecePossibleMove : piece.pieceMoves(board, new ChessPosition(rowNumber, columnNumber))){ // for each possible position in that piece move list
+                        ChessPosition endSpot = piecePossibleMove.getEndPosition(); //find the end position of each of those possible moves
+                        if (board.getPiece(endSpot) != null && board.getPiece(endSpot).getPieceType() == ChessPiece.PieceType.KING){ //then check and see if the end spot is a king with board.getpiece.getpiecetype
                             return true;
                         }
                     }
@@ -101,7 +105,8 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(ChessGame.TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+
+
     }
 
     /**

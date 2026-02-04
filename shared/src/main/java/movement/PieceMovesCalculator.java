@@ -20,8 +20,8 @@ public interface PieceMovesCalculator {
             while (!endSpot){
                 int row = start.getRow();
                 int col = start.getColumn();
-                row += eachDirection[1] * spacesMoved;
-                col += eachDirection[0] * spacesMoved;
+                row += eachDirection[0] * spacesMoved;
+                col += eachDirection[1] * spacesMoved;
                 ChessPosition newPos = new ChessPosition(row, col);
 
                 if (outOfBounds(newPos) == true) {

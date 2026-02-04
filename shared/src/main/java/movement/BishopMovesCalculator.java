@@ -12,5 +12,4 @@ public class BishopMovesCalculator implements PieceMovesCalculator{
         int[][] theDirections = {{1,1}, {-1,1}, {-1,-1}, {1,-1}};
         return PieceMovesCalculator.possibleMoves(board, start, theDirections, true);
     }
-
 }

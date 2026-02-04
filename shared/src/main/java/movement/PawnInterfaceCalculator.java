@@ -11,12 +11,14 @@ public interface PawnInterfaceCalculator extends PieceMovesCalculator{
 
         List<ChessMove> pawnMoves = new ArrayList<>();
         int direction = 0;
+
         if (teamColor == ChessGame.TeamColor.WHITE) {
             direction = 1;
         }
         else {
             direction = -1;
         }
+
         int row = start.getRow();;
         int col = start.getColumn();
         ChessPosition pawnPos = new ChessPosition(row + direction, col);
@@ -76,5 +78,4 @@ public interface PawnInterfaceCalculator extends PieceMovesCalculator{
             promotionSpot.add(new ChessMove(start, end, null));
         }
     }
-
 }

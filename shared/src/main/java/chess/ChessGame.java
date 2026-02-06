@@ -82,11 +82,34 @@ public class ChessGame {
             throw new InvalidMoveException();
         }
 
+        TeamColor teamColor = currentPiece.getTeamColor();
+
+        if (getTeamTurn() != teamColor){
+            throw new InvalidMoveException();
+        }
+
         Collection<ChessMove> moveList = currentPiece.pieceMoves(board, start);
 
         if (moveList.contains(move)) {
             board.addPiece(end, currentPiece);
             board.addPiece(start, null);
+
+            ChessPiece.PieceType promotion = move.getPromotionPiece();
+
+            if (promotion != null && currentPiece.getPieceType() == ChessPiece.PieceType.PAWN) {
+                board.addPiece(end, new ChessPiece(currentPiece.getTeamColor(), promotion));
+            } else {
+                board.addPiece(end, currentPiece);
+            }
+
+            if (isInCheck(teamColor) == true){
+                board.addPiece(end, null);
+                board.addPiece(start, currentPiece);
+                throw new InvalidMoveException();
+            }
+
+            if (teamColor == TeamColor.WHITE) setTeamTurn(TeamColor.BLACK);
+            if (teamColor == TeamColor.BLACK) setTeamTurn(TeamColor.WHITE);
         }
         else{
             throw new InvalidMoveException();

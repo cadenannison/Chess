@@ -58,6 +58,11 @@ public class ChessGame {
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         List<ChessMove> validChessMoves = new ArrayList<>();
+        ChessPiece currentPiece = board.getPiece(startPosition);
+
+//        ChessPosition start = currentPiece.
+//        ChessPosition end = currentPiece
+
 
         return validChessMoves;
     }
@@ -69,7 +74,23 @@ public class ChessGame {
          * @throws InvalidMoveException if move is invalid
          */
     public void makeMove(ChessMove move) throws InvalidMoveException {
+        ChessPosition start = move.getStartPosition();
+        ChessPosition end = move.getEndPosition();
+        ChessPiece currentPiece = board.getPiece(start);
 
+        if (currentPiece == null){
+            throw new InvalidMoveException();
+        }
+
+        Collection<ChessMove> moveList = currentPiece.pieceMoves(board, start);
+
+        if (moveList.contains(move)) {
+            board.addPiece(end, currentPiece);
+            board.addPiece(start, null);
+        }
+        else{
+            throw new InvalidMoveException();
+        }
     }
 
     /**
@@ -105,7 +126,7 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(ChessGame.TeamColor teamColor) {
-        //fix later
+        // king is in check and validMoves == null or {{}}, return true
         return true;
     }
 
@@ -117,6 +138,7 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
+        //if validMoves == null and king is not in check, return true
         throw new RuntimeException("Not implemented");
     }
 

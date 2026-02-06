@@ -15,9 +15,11 @@ public class ChessGame {
     ChessBoard board;
     TeamColor teamTurn;
 
+//    board = new ChessBoard();
+//    board.resetBoard();
+
     public ChessGame() {
-        board = new ChessBoard();
-        board.resetBoard();
+
     }
 
     /**
@@ -58,18 +60,19 @@ public class ChessGame {
         // get all moves for that chess piece,
         // simulate move, then check if king is in check
         // if not, then add to list
+        ChessPiece[][] boardCopy = new ChessPiece[8][8];
 
         return validChessMoves;
     }
 
-    /**
-     * Makes a move in a chess game
-     *
-     * @param move chess move to perform
-     * @throws InvalidMoveException if move is invalid
-     */
+        /**
+         * Makes a move in a chess game
+         *
+         * @param move chess move to perform
+         * @throws InvalidMoveException if move is invalid
+         */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-
+        throw new RuntimeException("Not implemented");
     }
 
     /**
@@ -105,8 +108,8 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(ChessGame.TeamColor teamColor) {
-
-
+        //fix later
+        return true;
     }
 
     /**

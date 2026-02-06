@@ -22,9 +22,9 @@ public class ChessPiece {
         this.type = type;
     }
 
-    public ChessPiece copy() {
-        return new ChessPiece(this.pieceColor, this.type);
-    }
+//    public ChessPiece copy() {
+//        return new ChessPiece(this.pieceColor, this.type);
+//    }
 
     /**
      * The various different chess piece options

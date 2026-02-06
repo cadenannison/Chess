@@ -17,17 +17,15 @@ public class ChessBoard {
         squares = new ChessPiece[8][8];
     }
 
-    public ChessBoard(ChessBoard other) {
-        squares = new ChessPiece[8][8];
-        for (int r = 0; r < 8; r++) {
-            for (int c = 0; c < 8; c++) {
-                ChessPiece p = other.squares[r][c];
-                squares[r][c] = (p == null) ? null : p.copy();
-            }
-        }
-    }
-
-
+//    public ChessBoard(ChessBoard newBoard) {
+//        squares = new ChessPiece[8][8];
+//        for (int r = 0; r < 8; r++) {
+//            for (int c = 0; c < 8; c++) {
+//                ChessPiece p = newBoard.squares[r][c];
+//                squares[r][c] = (p == null) ? null : p.copy();
+//            }
+//        }
+//    }
 
     /**
      * Adds a chess piece to the chessboard

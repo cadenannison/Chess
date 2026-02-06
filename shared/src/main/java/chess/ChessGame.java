@@ -3,6 +3,7 @@ package chess;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * For a class that can manage a chess game, making moves on a board
@@ -57,10 +58,6 @@ public class ChessGame {
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         List<ChessMove> validChessMoves = new ArrayList<>();
-        // get all moves for that chess piece,
-        // simulate move, then check if king is in check
-        // if not, then add to list
-        ChessPiece[][] boardCopy = new ChessPiece[8][8];
 
         return validChessMoves;
     }
@@ -72,7 +69,7 @@ public class ChessGame {
          * @throws InvalidMoveException if move is invalid
          */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        throw new RuntimeException("Not implemented");
+
     }
 
     /**
@@ -143,6 +140,25 @@ public class ChessGame {
         return board;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ChessGame chessGame = (ChessGame) o;
+        return Objects.equals(getBoard(), chessGame.getBoard()) && getTeamTurn() == chessGame.getTeamTurn();
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(getBoard(), getTeamTurn());
+    }
 
+    @Override
+    public String toString() {
+        return "ChessGame{" +
+                "board=" + board +
+                ", teamTurn=" + teamTurn +
+                '}';
+    }
 }

@@ -78,41 +78,43 @@ public class ChessGame {
         ChessPosition end = move.getEndPosition();
         ChessPiece currentPiece = board.getPiece(start);
 
-        if (currentPiece == null){
+        if (currentPiece == null){ //the proposed move doesn't start from a real piece
             throw new InvalidMoveException();
         }
 
         TeamColor teamColor = currentPiece.getTeamColor();
 
-        if (getTeamTurn() != teamColor){
+        if (getTeamTurn() != teamColor){ //wrong team turn
             throw new InvalidMoveException();
         }
 
-        Collection<ChessMove> moveList = currentPiece.pieceMoves(board, start);
+        Collection<ChessMove> moveList = currentPiece.pieceMoves(board, start); //get all possible moves for that piece
 
-        if (moveList.contains(move)) {
-            board.addPiece(end, currentPiece);
-            board.addPiece(start, null);
+        if (moveList.contains(move)) { // if the move passed in exists as a possibe move start move process
+            ChessPiece capturedPiece = board.getPiece(end); // save whatever is at the end position
 
-            ChessPiece.PieceType promotion = move.getPromotionPiece();
+            board.addPiece(end, currentPiece); // make the move by adding piece to the end
+            board.addPiece(start, null); // take the piece off the beginning
 
-            if (promotion != null && currentPiece.getPieceType() == ChessPiece.PieceType.PAWN) {
+            ChessPiece.PieceType promotion = move.getPromotionPiece(); // this just checks if the piece can be promoted to something
+
+            if (promotion != null && currentPiece.getPieceType() == ChessPiece.PieceType.PAWN) { // this is specifically for pawn promotions
                 board.addPiece(end, new ChessPiece(currentPiece.getTeamColor(), promotion));
             } else {
-                board.addPiece(end, currentPiece);
+                board.addPiece(end, currentPiece); // if not a pawn just add it to the end
             }
 
-            if (isInCheck(teamColor) == true){
-                board.addPiece(end, null);
+            if (isInCheck(teamColor) == true){ // now we see if making the move puts us into check
+                board.addPiece(end, capturedPiece); // if it does just undo the move
                 board.addPiece(start, currentPiece);
-                throw new InvalidMoveException();
+                throw new InvalidMoveException(); // throw the exception
             }
 
-            if (teamColor == TeamColor.WHITE) setTeamTurn(TeamColor.BLACK);
+            if (teamColor == TeamColor.WHITE) setTeamTurn(TeamColor.BLACK); // if the move succeeds change the team color
             if (teamColor == TeamColor.BLACK) setTeamTurn(TeamColor.WHITE);
         }
         else{
-            throw new InvalidMoveException();
+            throw new InvalidMoveException(); // if the move doesn't exist then throw exception
         }
     }
 

@@ -20,7 +20,9 @@ public class ChessGame {
 //    board.resetBoard();
 
     public ChessGame() {
-
+        board = new ChessBoard();
+        board.resetBoard();
+        teamTurn = TeamColor.WHITE;
     }
 
     /**
@@ -239,16 +241,17 @@ public class ChessGame {
 
     @Override
     public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
         ChessGame chessGame = (ChessGame) o;
-        return Objects.equals(getBoard(), chessGame.getBoard()) && getTeamTurn() == chessGame.getTeamTurn();
+        return Objects.equals(board, chessGame.board)
+                && teamTurn == chessGame.teamTurn;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getBoard(), getTeamTurn());
+        return Objects.hash(board, teamTurn);
     }
 
     @Override

@@ -150,7 +150,7 @@ public class ChessGame {
                 if (piece != null && piece.getTeamColor() != teamColor) { //as long as the piece isn't null and is opposite color
                     for (ChessMove piecePossibleMove : piece.pieceMoves(board, new ChessPosition(rowNumber, columnNumber))){ // for each possible position in that piece move list
                         ChessPosition endSpot = piecePossibleMove.getEndPosition(); //find the end position of each of those possible moves
-                        if (board.getPiece(endSpot) != null && board.getPiece(endSpot).getPieceType() == ChessPiece.PieceType.KING){ //then check and see if the end spot is a king with board.getpiece.getpiecetype
+                        if (board.getPiece(endSpot) != null && board.getPiece(endSpot).getPieceType() == ChessPiece.PieceType.KING && board.getPiece(endSpot).getTeamColor() == teamColor){ //then check and see if the end spot is a king with board.getpiece.getpiecetype
                             return true;
                         }
                     }
@@ -170,7 +170,23 @@ public class ChessGame {
      */
     public boolean isInCheckmate(ChessGame.TeamColor teamColor) {
         // king is in check and validMoves == null or {{}}, return true
-        return true;
+        Collection<ChessMove> moveList = new ArrayList<>();
+        int rowNumber = 1;
+        for (ChessPiece[] row : board.squares) { // check each row
+            int columnNumber = 1;
+            for (ChessPiece piece : row) { // check each col in that row
+                if (piece != null && piece.getTeamColor() == teamColor) { //as long as the piece isn't null and is opposite color
+                    for (ChessMove piecePossibleMove : piece.pieceMoves(board, new ChessPosition(rowNumber, columnNumber))){ // for each possible position in that piece move list
+                        Collection<ChessMove> pieceMoves = new ArrayList<>();
+                        moveList.addAll(validMoves(piecePossibleMove.getStartPosition()));
+                    }
+                }
+                columnNumber++;
+            }
+            rowNumber++;
+        }
+        if (isInCheck(teamColor) == true && moveList.isEmpty() == true) return true;
+        return false;
     }
 
     /**
@@ -182,7 +198,23 @@ public class ChessGame {
      */
     public boolean isInStalemate(TeamColor teamColor) {
         //if validMoves == null and king is not in check, return true
-        throw new RuntimeException("Not implemented");
+        Collection<ChessMove> moveList = new ArrayList<>();
+        int rowNumber = 1;
+        for (ChessPiece[] row : board.squares) { // check each row
+            int columnNumber = 1;
+            for (ChessPiece piece : row) { // check each col in that row
+                if (piece != null && piece.getTeamColor() == teamColor) { //as long as the piece isn't null and is opposite color
+                    for (ChessMove piecePossibleMove : piece.pieceMoves(board, new ChessPosition(rowNumber, columnNumber))){ // for each possible position in that piece move list
+                        Collection<ChessMove> pieceMoves = new ArrayList<>();
+                        moveList.addAll(validMoves(piecePossibleMove.getStartPosition()));
+                    }
+                }
+                columnNumber++;
+            }
+            rowNumber++;
+        }
+        if (isInCheck(teamColor) == false && moveList.isEmpty() == true) return true;
+        return false;
     }
 
     /**

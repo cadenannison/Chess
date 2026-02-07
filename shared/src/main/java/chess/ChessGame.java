@@ -59,11 +59,28 @@ public class ChessGame {
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         List<ChessMove> validChessMoves = new ArrayList<>();
         ChessPiece currentPiece = board.getPiece(startPosition);
+        TeamColor teamColor = currentPiece.getTeamColor();
+        Collection<ChessMove> moveList = currentPiece.pieceMoves(board, startPosition);
 
-//        ChessPosition start = currentPiece.
-//        ChessPosition end = currentPiece
+        for (ChessMove move : moveList) {
+            ChessPosition end = move.getEndPosition();
+            ChessPiece capturedPiece = board.getPiece(end);
 
+            board.addPiece(end, currentPiece);
+            board.addPiece(startPosition, null);
 
+            ChessPiece.PieceType promotion = move.getPromotionPiece();
+
+            if (isInCheck(teamColor) == true){
+                board.addPiece(end, capturedPiece);
+                board.addPiece(startPosition, currentPiece);
+            }
+            else {
+                validChessMoves.add(new ChessMove(startPosition, end, promotion));
+                board.addPiece(end, capturedPiece);
+                board.addPiece(startPosition, currentPiece);
+            }
+        }
         return validChessMoves;
     }
 

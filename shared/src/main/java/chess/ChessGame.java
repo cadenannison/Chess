@@ -57,31 +57,32 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        List<ChessMove> validChessMoves = new ArrayList<>();
+        List<ChessMove> validChessMoves = new ArrayList<>(); // create the list we will return
         ChessPiece currentPiece = board.getPiece(startPosition);
         TeamColor teamColor = currentPiece.getTeamColor();
-        Collection<ChessMove> moveList = currentPiece.pieceMoves(board, startPosition);
+        Collection<ChessMove> moveList = currentPiece.pieceMoves(board, startPosition); // call on pieceMoves to get possible moves
 
-        for (ChessMove move : moveList) {
+        for (ChessMove move : moveList) { // for every possible move for that piece, check each move
             ChessPosition end = move.getEndPosition();
-            ChessPiece capturedPiece = board.getPiece(end);
+            ChessPiece capturedPiece = board.getPiece(end); // store the captured piece (or null)
 
-            board.addPiece(end, currentPiece);
+            board.addPiece(end, currentPiece); // make a simulated move
             board.addPiece(startPosition, null);
 
-            ChessPiece.PieceType promotion = move.getPromotionPiece();
+            ChessPiece.PieceType promotion = move.getPromotionPiece(); // for pawns check if it could be promoted
 
-            if (isInCheck(teamColor) == true){
+            if (isInCheck(teamColor) == true){ // make sure that after making the simulated move your king isn't in check
                 board.addPiece(end, capturedPiece);
                 board.addPiece(startPosition, currentPiece);
+                // don't add the move if the king is in check after
             }
             else {
-                validChessMoves.add(new ChessMove(startPosition, end, promotion));
+                validChessMoves.add(new ChessMove(startPosition, end, promotion)); // add the move to the list if the king isn't in check
                 board.addPiece(end, capturedPiece);
-                board.addPiece(startPosition, currentPiece);
+                board.addPiece(startPosition, currentPiece); // reset the board
             }
         }
-        return validChessMoves;
+        return validChessMoves; // return the final list/collection
     }
 
         /**

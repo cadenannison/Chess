@@ -22,7 +22,7 @@ public class RegisterService {
         if (request.username() == null || request.password() == null || request.email() == null) {
             throw new BadRequest("Missing field(s)");
         }
-        else if (DataAccess.getUser(request.username()) != null) {
+        else if (dataAccess.getUser(request.username()) != null) {
             throw new AlreadyTaken("User already exists");
         }
         else {

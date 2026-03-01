@@ -7,14 +7,14 @@ import model.UserData;
 import java.util.HashMap;
 
 public class CompMemDataAccess implements DataAccess{
-    private final HashMap<String, AuthData> auths = new HashMap<>(); //computer memorry for each data type
-    private final HashMap<String, UserData> users = new HashMap<>();
-    private final HashMap<Integer, GameData> games = new HashMap<>();
+    private final HashMap<String, AuthData> authData = new HashMap<>(); //computer memorry for each data type
+    private final HashMap<String, UserData> userData = new HashMap<>();
+    private final HashMap<Integer, GameData> gameData = new HashMap<>();
 
     public void clear() {
-        users.clear();
-        games.clear();
-        auths.clear();
+        userData.clear();
+        gameData.clear();
+        authData.clear();
     }
 
 }

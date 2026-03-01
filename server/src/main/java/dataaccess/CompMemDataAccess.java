@@ -17,4 +17,22 @@ public class CompMemDataAccess implements DataAccess{
         authData.clear();
     }
 
+    public void createUser(UserData user) throws DataAccessException {
+        // need to check first if person exists
+        if (userData.containsKey(user.username())) {
+            throw new DataAccessException("This username already exists");
+        }
+        else {
+            userData.put(user.username(), user);
+        }
+    }
+    public UserData getUser(String username) throws DataAccessException {
+        return userData.get(username);
+    }
+
+    public void createAuth(AuthData auth) throws DataAccessException {
+        authData.put(auth.authToken(), auth);
+    }
+
+
 }

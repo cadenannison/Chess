@@ -22,8 +22,7 @@ public class Server {
             }
             catch (Exception e) {
                 ctx.status(500);
-                ctx.result(e.getMessage());
-            }
+                ctx.result("{ \"message\": \"Error: " + e.getMessage() + "\" }");            }
         });
     }
 

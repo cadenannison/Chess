@@ -5,8 +5,6 @@ import dataaccess.DataAccessException;
 import model.AuthData;
 import model.UserData;
 
-import javax.xml.crypto.Data;
-
 public class RegisterService {
     private DataAccess dataAccess;
 

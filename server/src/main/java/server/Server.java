@@ -92,6 +92,28 @@ public class Server {
 
         //createGame
 
+        CreateGameService createGameService = new CreateGameService(dataAccess);
+        javalin.post("/game", ctx -> {
+            try {
+                String authToken = ctx.header("authorization");
+                CreateGameService.CreateGameRequest request = gson.fromJson(ctx.body(), CreateGameService.CreateGameRequest.class);
+                CreateGameService.CreateGameResult result = createGameService.createGame(authToken, request);
+                ctx.status(200);
+                ctx.result(gson.toJson(result));
+            }
+            catch (BadRequest e) {
+                ctx.status(400);
+                ctx.result("{ \"message\": \"Error: bad request\" }");
+            }
+            catch (Unauthorized e) {
+                ctx.status(401);
+                ctx.result("{ \"message\": \"Error: unauthorized\" }");
+            }
+            catch (Exception e) {
+                ctx.status(500);
+                ctx.result("{ \"message\": \"Error: " + e.getMessage() + "\" }");
+            }
+        });
 
 
     }

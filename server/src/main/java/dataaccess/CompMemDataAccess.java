@@ -4,6 +4,7 @@ import model.AuthData;
 import model.GameData;
 import model.UserData;
 
+import java.util.Collection;
 import java.util.HashMap;
 
 public class CompMemDataAccess implements DataAccess {
@@ -51,4 +52,16 @@ public class CompMemDataAccess implements DataAccess {
         games.put(gameID, newGame); // add newGame to games
         return gameID;
     }
+
+    public GameData getGame(int gameId) throws DataAccessException {
+        return gameData.get(gameId);
+    }
+
+    public Collection<GameData> listGames() throws DataAccessException {
+        return games.values();
+    }
+
+
+
+
 }

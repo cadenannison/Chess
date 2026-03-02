@@ -1,7 +1,9 @@
 package dataaccess;
 import model.AuthData;
+import model.GameData;
 import model.UserData;
 
+import java.util.Collection;
 import java.util.HashMap;
 
 public interface DataAccess {
@@ -12,7 +14,7 @@ public interface DataAccess {
     AuthData getAuth(String authToken) throws DataAccessException;
     void deleteAuthToken(String authToken) throws DataAccessException;
     int createGame(String gameName) throws DataAccessException;
-
-
+    GameData getGame(int gameId) throws DataAccessException;
+    Collection<GameData> listGames() throws DataAccessException;
 }
 

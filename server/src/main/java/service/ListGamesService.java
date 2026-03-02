@@ -22,7 +22,6 @@ public class ListGamesService {
         else {
             return new ListGamesResult(dataAccess.listGames());
         }
-
     }
 
 

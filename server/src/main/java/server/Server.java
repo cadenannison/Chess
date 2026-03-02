@@ -115,6 +115,26 @@ public class Server {
             }
         });
 
+        // list games section
+
+//        ListGamesService.ListGamesResult result = new ListGamesService.ListGamesResult(dataAccess);
+//
+        javalin.get("/game", ctx -> {
+            try {
+                String authToken = ctx.header("authorization");
+                ListGamesService.ListGamesResult result = ListGamesService.listGames(authToken);
+                ctx.status(200);
+                ctx.result(gson.toJson(result));
+            }
+            catch (Unauthorized e) {
+                ctx.status(401);
+                ctx.result("{ \"message\": \"Error: unauthorized\" }");
+            }
+            catch (Exception e) {
+                ctx.status(500);
+                ctx.result("{ \"message\": \"Error: " + e.getMessage() + "\" }");
+            }
+        });
 
     }
 

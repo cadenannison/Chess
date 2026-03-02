@@ -23,8 +23,10 @@ public class LogoutTests {
 
     @Test
     void LogoutSuccess() throws Exception {
-        registerService.registerUser(new RegisterService.RegisterRequest("jimmy", "abc123", "jimmy@gmail.com"));
-        LoginService.LoginResult result = loginService.loginUser(new LoginService.LoginRequest("jimmy", "abc123"));
+        registerService.registerUser(new
+                RegisterService.RegisterRequest("jimmy", "abc123", "jimmy@gmail.com"));
+        LoginService.LoginResult result = loginService.loginUser(new
+                LoginService.LoginRequest("jimmy", "abc123"));
         String authToken = result.authToken();
         // check that logout works and that the auth token is gone
         assertDoesNotThrow(() -> logoutService.logoutUser(authToken));
@@ -34,5 +36,6 @@ public class LogoutTests {
     @Test
     void logoutBadToken() {
         assertThrows(Unauthorized.class, () -> logoutService.logoutUser("wrongAuthTOken"));
+        //there isnt this auth token in the memory so it should fail
     }
 }

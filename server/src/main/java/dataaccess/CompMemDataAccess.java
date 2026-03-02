@@ -10,6 +10,8 @@ public class CompMemDataAccess implements DataAccess {
     private final HashMap<String, AuthData> authData = new HashMap<>(); //computer memorry for each data type
     private final HashMap<String, UserData> userData = new HashMap<>();
     private final HashMap<Integer, GameData> gameData = new HashMap<>();
+    private final HashMap<Integer, GameData> games = new HashMap<>();
+    private int incrementId = 1;
 
     public void clear() {
         userData.clear();
@@ -40,5 +42,13 @@ public class CompMemDataAccess implements DataAccess {
 
     public void deleteAuthToken(String authToken) throws DataAccessException {
         authData.remove(authToken);
+    }
+
+    public int createGame(String gameName) throws DataAccessException {
+        HashMap<Integer, GameData> games = new HashMap<>();
+        int gameID = incrementId++;
+        GameData newGame = new GameData(gameID, null, null, gameName, new chess.ChessGame());
+        games.put(gameID, newGame); // add newGame to games
+        return gameID;
     }
 }

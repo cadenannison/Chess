@@ -1,6 +1,9 @@
 package service;
 import dataaccess.CompMemDataAccess;
 import org.junit.jupiter.api.*;
+import service.AlreadyTaken;
+import service.RegisterService;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class RegisterTests {
@@ -12,7 +15,8 @@ public class RegisterTests {
 
     @Test
     void regSuccess() throws Exception {
-        RegisterService.RegisterRequest request = new RegisterService.RegisterRequest("jimmy", "abc123", "email@gmail.com");
+        RegisterService.RegisterRequest request = new
+                RegisterService.RegisterRequest("jimmy", "abc123", "email@gmail.com");
         RegisterService.RegisterResult result = service.registerUser(request);
         assertNotNull(result.authToken());
         assertEquals("jimmy", result.username());

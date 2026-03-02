@@ -18,10 +18,10 @@ public class RegisterService {
     public RegisterResult registerUser(RegisterRequest request) throws BadRequest, AlreadyTaken, DataAccessException {
         //check for register issues
         if (request.username() == null || request.password() == null || request.email() == null) {
-            throw new BadRequest("Missing field(s)");
+            throw new BadRequest("Error: bad request");
         }
         else if (dataAccess.getUser(request.username()) != null) {
-            throw new AlreadyTaken("User already exists");
+            throw new AlreadyTaken("Error: already taken");
         }
         else {
             //store the user request in a newUser record

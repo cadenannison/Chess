@@ -6,7 +6,7 @@ import model.UserData;
 
 import java.util.HashMap;
 
-public class CompMemDataAccess implements DataAccess{
+public class CompMemDataAccess implements DataAccess {
     private final HashMap<String, AuthData> authData = new HashMap<>(); //computer memorry for each data type
     private final HashMap<String, UserData> userData = new HashMap<>();
     private final HashMap<Integer, GameData> gameData = new HashMap<>();
@@ -34,5 +34,11 @@ public class CompMemDataAccess implements DataAccess{
         authData.put(auth.authToken(), auth);
     }
 
+    public AuthData getAuth(String authToken) throws DataAccessException {
+        return authData.get(authToken);
+    }
 
+    public void deleteAuthToken(String authToken) throws DataAccessException {
+        authData.remove(authToken);
+    }
 }

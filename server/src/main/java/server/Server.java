@@ -4,10 +4,7 @@ import com.google.gson.Gson;
 import dataaccess.CompMemDataAccess;
 import dataaccess.DataAccess;
 import io.javalin.*;
-import service.AlreadyTaken;
-import service.BadRequest;
-import service.ClearService;
-import service.RegisterService;
+import service.*;
 
 public class Server {
 
@@ -49,6 +46,51 @@ public class Server {
                 ctx.result("{ \"message\": \"Error: " + e.getMessage() + "\" }");
             }
         });
+
+        //for login
+        LoginService loginService = new LoginService(dataAccess);
+        javalin.post("/session", ctx -> {
+            try {
+                LoginService.LoginRequest request = gson.fromJson(ctx.body(), LoginService.LoginRequest.class);
+                LoginService.LoginResult result = loginService.loginUser(request);
+                ctx.status(200);
+                ctx.result(gson.toJson(result));
+            }
+            catch (BadRequest e) {
+                ctx.status(400);
+                ctx.result("{ \"message\": \"Error: bad request\" }");
+            }
+            catch (Unauthorized e) {
+                ctx.status(401);
+                ctx.result("{ \"message\": \"Error: unauthorized\" }");
+            }
+            catch (Exception e) {
+            ctx.status(500);
+            ctx.result("{ \"message\": \"Error: " + e.getMessage() + "\" }");
+            }
+        });
+
+        // logout
+
+        LogoutService logoutService = new LogoutService(dataAccess);
+        javalin.delete("/session", ctx -> {
+            try {
+                String authToken = ctx.header("authorization");
+                logoutService.logoutUser(authToken);
+                ctx.status(200);
+                ctx.result("{}");
+            }
+            catch (Unauthorized e) {
+                ctx.status(401);
+                ctx.result("{ \"message\": \"Error: unauthorized\" }");
+            }
+            catch (Exception e) {
+                ctx.status(500);
+                ctx.result("{ \"message\": \"Error: " + e.getMessage() + "\" }");
+            }
+        });
+
+
     }
 
 

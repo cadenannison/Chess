@@ -117,12 +117,11 @@ public class Server {
 
         // list games section
 
-//        ListGamesService.ListGamesResult result = new ListGamesService.ListGamesResult(dataAccess);
-//
+        ListGamesService listGameService = new ListGamesService(dataAccess);
         javalin.get("/game", ctx -> {
             try {
                 String authToken = ctx.header("authorization");
-                ListGamesService.ListGamesResult result = ListGamesService.listGames(authToken);
+                ListGamesService.ListGamesResult result = listGameService.listGames(authToken);
                 ctx.status(200);
                 ctx.result(gson.toJson(result));
             }

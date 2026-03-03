@@ -30,7 +30,7 @@ public class CreateGameTests {
     }
 
     @Test
-    void CreateGameSuccess() throws Exception {
+    void createGameSuccess() throws Exception {
         CreateGameService.CreateGameRequest request = new CreateGameService.CreateGameRequest("Mock Game");
         CreateGameService.CreateGameResult result = gameService.createGame(authToken, request);
         // make sure it worked
@@ -38,7 +38,7 @@ public class CreateGameTests {
     }
 
     @Test
-    void CreateGameFail() throws Exception {
+    void createGameFail() throws Exception {
         CreateGameService.CreateGameRequest request = new CreateGameService.CreateGameRequest("Bad Game");
         assertThrows(Unauthorized.class, () -> gameService.createGame("bad", request));
     }

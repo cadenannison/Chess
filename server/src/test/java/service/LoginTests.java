@@ -20,7 +20,7 @@ public class LoginTests {
     }
 
     @Test
-    void LoginSuccess() throws Exception {
+    void loginSuccess() throws Exception {
         registerService.registerUser(new RegisterService.RegisterRequest("jimmy", "abc123", "jimmy@gmail.com"));
         LoginService.LoginRequest request = new LoginService.LoginRequest("jimmy", "abc123");
         LoginService.LoginResult result = loginService.loginUser(request);
@@ -30,7 +30,7 @@ public class LoginTests {
     }
 
     @Test
-    void LoginWrongPassword() throws Exception {
+    void loginWrongPassword() throws Exception {
         registerService.registerUser(new RegisterService.RegisterRequest("jimmy", "abc123", "jimmy@gmail.com"));
         LoginService.LoginRequest request = new LoginService.LoginRequest("jimmy", "BadPass");
         assertThrows(Unauthorized.class, () -> loginService.loginUser(request));

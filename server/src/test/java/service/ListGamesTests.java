@@ -29,13 +29,13 @@ public class ListGamesTests {
     }
 
     @Test
-    void ListGamesSuccess() throws Exception {
+    void listGamesSuccess() throws Exception {
         ListGamesService.ListGamesResult result = listGamesService.listGames(authToken);
         Assertions.assertDoesNotThrow(()-> listGamesService.listGames(authToken));
     }
 
     @Test
-    void AuthFail() throws Exception {
+    void authFail() throws Exception {
         ListGamesService.ListGamesResult result = listGamesService.listGames(authToken);
         Assertions.assertThrows(Unauthorized.class, () -> listGamesService.listGames("NoToken"));
 

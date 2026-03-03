@@ -22,7 +22,7 @@ public class LogoutTests {
     }
 
     @Test
-    void LogoutSuccess() throws Exception {
+    void logoutSuccess() throws Exception {
         registerService.registerUser(new
                 RegisterService.RegisterRequest("jimmy", "abc123", "jimmy@gmail.com"));
         LoginService.LoginResult result = loginService.loginUser(new

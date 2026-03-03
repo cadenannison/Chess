@@ -22,7 +22,7 @@ public class ClearTests {
     }
 
     @Test
-    void ClearTest() throws Exception {
+    void clearTest() throws Exception {
         RegisterService.RegisterResult result = registerService.registerUser
                 (new RegisterService.RegisterRequest("jimmy", "abc123", "jimmy@gmail.com"));
         createGameService.createGame(result.authToken(),

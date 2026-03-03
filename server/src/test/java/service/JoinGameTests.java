@@ -33,14 +33,14 @@ public class JoinGameTests {
     }
 
     @Test
-    void JoinGameSuccess() throws Exception {
+    void joinGameSuccess() throws Exception {
         JoinGameService.JoinGameRequest request =
                 new JoinGameService.JoinGameRequest("WHITE", gameID);
         Assertions.assertDoesNotThrow(() -> joinGameService.joinGame(authToken, request));
     }
 
     @Test
-    void JoinWrongColorGameFail() throws Exception {
+    void joinWrongColorGameFail() throws Exception {
         JoinGameService.JoinGameRequest firstRequest = new JoinGameService.JoinGameRequest("BLACK", gameID);
         joinGameService.joinGame(authToken, firstRequest);
         RegisterService registerService = new RegisterService(dataAccess);

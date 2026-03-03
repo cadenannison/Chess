@@ -130,8 +130,12 @@ public class ChessGame {
                 throw new InvalidMoveException(); // throw the exception
             }
 
-            if (teamColor == TeamColor.WHITE) setTeamTurn(TeamColor.BLACK); // if the move succeeds change the team color
-            if (teamColor == TeamColor.BLACK) setTeamTurn(TeamColor.WHITE);
+            if (teamColor == TeamColor.WHITE) {
+                setTeamTurn(TeamColor.BLACK); // if the move succeeds change the team color
+            }
+            if (teamColor == TeamColor.BLACK) {
+                setTeamTurn(TeamColor.WHITE);
+            }
         }
         else{
             throw new InvalidMoveException(); // if the move doesn't exist then throw exception
@@ -187,7 +191,9 @@ public class ChessGame {
             }
             rowNumber++;
         }
-        if (isInCheck(teamColor) == true && moveList.isEmpty() == true) return true;
+        if (isInCheck(teamColor) == true && moveList.isEmpty() == true) {
+            return true;
+        }
         return false;
     }
 
@@ -215,7 +221,9 @@ public class ChessGame {
             }
             rowNumber++;
         }
-        if (isInCheck(teamColor) == false && moveList.isEmpty() == true) return true;
+        if (isInCheck(teamColor) == false && moveList.isEmpty() == true) {
+            return true;
+        }
         return false;
     }
 
@@ -242,7 +250,9 @@ public class ChessGame {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         ChessGame chessGame = (ChessGame) o;
         return Objects.equals(board, chessGame.board)

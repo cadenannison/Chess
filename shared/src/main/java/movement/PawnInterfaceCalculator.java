@@ -59,7 +59,9 @@ public interface PawnInterfaceCalculator extends PieceMovesCalculator{
         return pawnMoves;
     }
 
-    private static void promotionCheck(ChessBoard board, ChessPosition start, List<ChessMove> promotionSpot, ChessPosition end, ChessGame.TeamColor teamColor) {
+    private static void promotionCheck(ChessBoard board, ChessPosition start,
+                                       List<ChessMove> promotionSpot, ChessPosition end,
+                                       ChessGame.TeamColor teamColor) {
         int promote;
 
         if (teamColor == ChessGame.TeamColor.BLACK) {

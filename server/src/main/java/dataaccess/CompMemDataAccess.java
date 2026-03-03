@@ -46,10 +46,10 @@ public class CompMemDataAccess implements DataAccess {
     }
 
     public int createGame(String gameName) throws DataAccessException {
-        HashMap<Integer, GameData> games = new HashMap<>();
         int gameID = incrementId++;
+        // initializes the game
         GameData newGame = new GameData(gameID, null, null, gameName, new chess.ChessGame());
-        games.put(gameID, newGame); // add newGame to games
+        gameData.put(gameID, newGame);
         return gameID;
     }
 
@@ -58,7 +58,7 @@ public class CompMemDataAccess implements DataAccess {
     }
 
     public Collection<GameData> listGames() throws DataAccessException {
-        return games.values();
+        return gameData.values();
     }
 
 

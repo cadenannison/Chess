@@ -35,13 +35,16 @@ public class Server {
                 RegisterService.RegisterResult result = registerService.registerUser(request);
                 ctx.status(200);
                 ctx.json(gson.toJson(result)); // bug wihtout gson.toJson
-            } catch (BadRequest e) {
+            }
+            catch (BadRequest e) {
                 ctx.status(400);
                 ctx.result("{ \"message\": \"Error: " + e.getMessage() + "\" }");
-            } catch (AlreadyTaken e) {
+            }
+            catch (AlreadyTaken e) {
                 ctx.status(403);
                 ctx.result("{ \"message\": \"Error: " + e.getMessage() + "\" }");
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 ctx.status(500);
                 ctx.result("{ \"message\": \"Error: " + e.getMessage() + "\" }");
             }
@@ -137,10 +140,14 @@ public class Server {
 
         JoinGameService joinGameService = new JoinGameService(dataAccess);
 
-        javalin.get("/game", ctx -> {
+        javalin.put("/game", ctx -> {
             try {
-
-
+                String authToken = ctx.header("authorization");
+                JoinGameService.JoinGameRequest request =
+                        gson.fromJson(ctx.body(), JoinGameService.JoinGameRequest.class);
+                joinGameService.joinGame(authToken, request);
+                ctx.status(200);
+                ctx.result("{}");
             }
             catch (BadRequest e) {
                 ctx.status(400);
@@ -150,12 +157,15 @@ public class Server {
                 ctx.status(401);
                 ctx.result("{ \"message\": \"Error: unauthorized\" }");
             }
+            catch (AlreadyTaken e) {
+                ctx.status(403);
+                ctx.result("{ \"message\": \"Error: " + e.getMessage() + "\" }");
+            }
             catch (Exception e) {
                 ctx.status(500);
                 ctx.result("{ \"message\": \"Error: " + e.getMessage() + "\" }");
             }
         });
-
     }
 
 

@@ -135,6 +135,27 @@ public class Server {
             }
         });
 
+        JoinGameService joinGameService = new JoinGameService(dataAccess);
+
+        javalin.get("/game", ctx -> {
+            try {
+
+
+            }
+            catch (BadRequest e) {
+                ctx.status(400);
+                ctx.result("{ \"message\": \"Error: bad request\" }");
+            }
+            catch (Unauthorized e) {
+                ctx.status(401);
+                ctx.result("{ \"message\": \"Error: unauthorized\" }");
+            }
+            catch (Exception e) {
+                ctx.status(500);
+                ctx.result("{ \"message\": \"Error: " + e.getMessage() + "\" }");
+            }
+        });
+
     }
 
 

@@ -8,24 +8,28 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ClearTests {
-    private LoginService loginService;
+    private ClearService clearService;
+    private CreateGameService createGameService;
     private RegisterService registerService;
     private DataAccess dataAccess;
 
     @BeforeEach
     void setup() {
         dataAccess = new CompMemDataAccess();
-        loginService = new LoginService(dataAccess);
+        clearService = new ClearService(dataAccess);
+        createGameService = new CreateGameService(dataAccess);
         registerService = new RegisterService(dataAccess);
     }
 
     @Test
-    void LoginSuccess() throws Exception {
-        registerService.registerUser(new RegisterService.RegisterRequest("jimmy", "abc123", "jimmy@gmail.com"));
-        LoginService.LoginRequest request = new LoginService.LoginRequest("jimmy", "abc123");
-        LoginService.LoginResult result = loginService.loginUser(request);
-
-        assertNotNull(result.authToken());
-        assertEquals("jimmy", result.username());
+    void ClearTest() throws Exception {
+        RegisterService.RegisterResult result = registerService.registerUser
+                (new RegisterService.RegisterRequest("jimmy", "abc123", "jimmy@gmail.com"));
+        createGameService.createGame(result.authToken(),
+                new CreateGameService.CreateGameRequest("Game"));
+        clearService.clear();
+        assertNull(dataAccess.getUser("jimmy"));
+        assertNull(dataAccess.getAuth(result.authToken()));
+        assertTrue(dataAccess.listGames().size() == 0);
     }
 }

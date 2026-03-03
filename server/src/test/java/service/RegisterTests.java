@@ -14,7 +14,7 @@ public class RegisterTests {
     }
 
     @Test
-    void regSuccess() throws Exception {
+    void registrationSuccess() throws Exception {
         RegisterService.RegisterRequest request = new
                 RegisterService.RegisterRequest("jimmy", "abc123", "email@gmail.com");
         RegisterService.RegisterResult result = service.registerUser(request);

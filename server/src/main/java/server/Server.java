@@ -177,3 +177,5 @@ public class Server {
         javalin.stop();
     }
 }
+
+// need to combine the error message responses in order to shortern to < 100 lines

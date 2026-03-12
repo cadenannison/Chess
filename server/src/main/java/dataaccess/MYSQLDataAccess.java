@@ -5,15 +5,10 @@ import model.GameData;
 import model.UserData;
 import org.mindrot.jbcrypt.BCrypt;
 
-import javax.xml.crypto.Data;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.Collection;
 
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
-import static java.sql.Types.NULL;
 
 public class MYSQLDataAccess implements DataAccess {
     public MYSQLDataAccess() throws DataAccessException {
@@ -27,7 +22,7 @@ public class MYSQLDataAccess implements DataAccess {
                     Object param = params[i];
                     if (param instanceof String p)  preparedStatement.setString(i + 1, p);
                     else if (param instanceof Integer p) preparedStatement.setInt(i + 1, p);
-                    else if (param == null) preparedStatement.setNull(i + 1, NULL);
+                    else if (param == null) preparedStatement.setNull(i + 1, Types.NULL);
                 }
                 preparedStatement.executeUpdate();
                 ResultSet rs = preparedStatement.getGeneratedKeys();
@@ -66,15 +61,33 @@ public class MYSQLDataAccess implements DataAccess {
         return null;
     }
 
-    void createAuth(AuthData auth) throws DataAccessException {
-
+    public void createAuth(AuthData auth) throws DataAccessException {
+        var statement = "INSERT INTO auth (authToken, username) VALUES (?, ?)";
+        executeUpdate(statement, auth.authToken(), auth.username());
     }
-    AuthData getAuth(String authToken) throws DataAccessException{
 
+    public AuthData getAuth(String authToken) throws DataAccessException{
+        try (Connection conn = DatabaseManager.getConnection()) {
+            var statement = "SELECT authToken, username FROM auth WHERE authToken=?";
+            try (PreparedStatement ps = conn.prepareStatement(statement)) {
+                ps.setString(1, authToken);
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        return new AuthData(rs.getString("authToken"), rs.getString("username"));
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException("Unable to read user: " + e.getMessage());
+        }
+        return null;
     }
-    void deleteAuthToken(String authToken) throws DataAccessException{
 
+    public void deleteAuthToken(String authToken) throws DataAccessException{
+        var statement = "DELETE FROM auth WHERE authToken=?";
+        executeUpdate(statement, authToken);
     }
+
     int createGame(String gameName) throws DataAccessException{
 
     }

@@ -1,12 +1,91 @@
 package dataaccess;
 
+import model.AuthData;
+import model.GameData;
+import model.UserData;
+import org.mindrot.jbcrypt.BCrypt;
+
 import javax.xml.crypto.Data;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collection;
+
+import static java.sql.Statement.RETURN_GENERATED_KEYS;
+import static java.sql.Types.NULL;
 
 public class MYSQLDataAccess implements DataAccess {
     public MYSQLDataAccess() throws DataAccessException {
         configureDatabase();
+    }
+
+    private int executeUpdate(String statement, Object... params) throws DataAccessException {
+        try (Connection conn = DatabaseManager.getConnection()) {
+            try (PreparedStatement preparedStatement = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
+                for (int i = 0; i < params.length; i++) {
+                    Object param = params[i];
+                    if (param instanceof String p)  preparedStatement.setString(i + 1, p);
+                    else if (param instanceof Integer p) preparedStatement.setInt(i + 1, p);
+                    else if (param == null) preparedStatement.setNull(i + 1, NULL);
+                }
+                preparedStatement.executeUpdate();
+                ResultSet rs = preparedStatement.getGeneratedKeys();
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+                return 0;
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException("Unable to update database: " + e.getMessage());
+        }
+    }
+
+    public void createUser(UserData user) throws DataAccessException {
+        var statement = "INSERT INTO users (username, password, email) VALUES (?, ?, ?)";
+        String hashedPassword = BCrypt.hashpw(user.password(), BCrypt.gensalt());
+        executeUpdate(statement, user.username(), hashedPassword, user.email());
+    }
+
+    public UserData getUser(String username) throws DataAccessException {
+        try (Connection conn = DatabaseManager.getConnection()) {
+            var statement = "SELECT username, password, email FROM users WHERE username=?";
+            try (PreparedStatement ps = conn.prepareStatement(statement)) {
+                ps.setString(1, username);
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        return new UserData(rs.getString("username"),
+                                    rs.getString("password"),
+                                    rs.getString("email"));
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException("Unable to read user: " + e.getMessage());
+        }
+        return null;
+    }
+
+    void createAuth(AuthData auth) throws DataAccessException {
+
+    }
+    AuthData getAuth(String authToken) throws DataAccessException{
+
+    }
+    void deleteAuthToken(String authToken) throws DataAccessException{
+
+    }
+    int createGame(String gameName) throws DataAccessException{
+
+    }
+    GameData getGame(int gameId) throws DataAccessException{
+
+    }
+    Collection<GameData> listGames() throws DataAccessException{
+
+    }
+    void joinGame(String username, String playerColor, int gameID) throws DataAccessException{
+
     }
 
     private final String[] createStatements = {

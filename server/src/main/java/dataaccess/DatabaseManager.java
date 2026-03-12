@@ -16,6 +16,16 @@ public class DatabaseManager {
         loadPropertiesFromResources();
     }
 
+    public void example() throws Exception {
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement("SELECT 1+1")) {
+                var rs = preparedStatement.executeQuery();
+                rs.next();
+                System.out.println(rs.getInt(1));
+            }
+        }
+    }
+
     /**
      * Creates the database if it does not already exist.
      */
@@ -28,6 +38,8 @@ public class DatabaseManager {
             throw new DataAccessException("failed to create database", ex);
         }
     }
+
+
 
     /**
      * Create a connection to the database and sets the catalog based upon the

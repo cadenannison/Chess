@@ -1,5 +1,7 @@
 package dataaccess;
 
+import chess.ChessGame;
+import com.google.gson.Gson;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
@@ -73,12 +75,13 @@ public class MYSQLDataAccess implements DataAccess {
                 ps.setString(1, authToken);
                 try (ResultSet rs = ps.executeQuery()) {
                     if (rs.next()) {
-                        return new AuthData(rs.getString("authToken"), rs.getString("username"));
+                        return new AuthData(rs.getString("authToken"),
+                                rs.getString("username"));
                     }
                 }
             }
         } catch (SQLException e) {
-            throw new DataAccessException("Unable to read user: " + e.getMessage());
+            throw new DataAccessException("Unable to read auth: " + e.getMessage());
         }
         return null;
     }
@@ -88,15 +91,47 @@ public class MYSQLDataAccess implements DataAccess {
         executeUpdate(statement, authToken);
     }
 
-    int createGame(String gameName) throws DataAccessException{
-
+    public int createGame(String gameName) throws DataAccessException{
+//        int gameID = incrementId++;
+//        // initializes the game
+//        GameData newGame = new GameData(gameID, null, null, gameName, new chess.ChessGame());
+//        gameData.put(gameID, newGame);
+//        return gameID;
+        var statement = "INSERT INTO games (whiteUsername, blackUsername, gameName, game) VALUES (?, ?, ?, ?)";
+        String json = new Gson().toJson(new chess.ChessGame());
+        return executeUpdate(statement, null, null, gameName, json);
     }
-    GameData getGame(int gameId) throws DataAccessException{
 
+    public GameData getGame(int gameId) throws DataAccessException{
+        try (Connection conn = DatabaseManager.getConnection()) {
+            var statement = "SELECT gameID, whiteUsername, blackUsername, gameName, game FROM games WHERE gameID=?";
+            try (PreparedStatement ps = conn.prepareStatement(statement)) {
+                ps.setInt(1, gameId);
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        return readGame(rs);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException("Unable to read game: " + e.getMessage());
+        }
+        return null;
     }
+
+    private GameData readGame(ResultSet rs) throws SQLException {
+        int gameID = rs.getInt("gameID");
+        String whiteUsername = rs.getString("whiteUsername");
+        String blackUsername = rs.getString("blackUsername");
+        String gameName = rs.getString("gameName");
+        ChessGame game = new Gson().fromJson(rs.getString("game"), ChessGame.class);
+        return new GameData(gameID, whiteUsername, blackUsername, gameName, game);
+    }
+
     Collection<GameData> listGames() throws DataAccessException{
 
     }
+
     void joinGame(String username, String playerColor, int gameID) throws DataAccessException{
 
     }
@@ -106,24 +141,24 @@ public class MYSQLDataAccess implements DataAccess {
             CREATE TABLE IF NOT EXISTS users (
                 username VARCHAR(256) NOT NULL,
                 password VARCHAR(256) NOT NULL,
-                email    VARCHAR(256) NOT NULL,
+                email VARCHAR(256) NOT NULL,
                 PRIMARY KEY (username)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
             """,
             """
             CREATE TABLE IF NOT EXISTS games (
-                gameID        INT NOT NULL AUTO_INCREMENT,
+                gameID INT NOT NULL AUTO_INCREMENT,
                 whiteUsername VARCHAR(256),
                 blackUsername VARCHAR(256),
-                gameName      VARCHAR(256) NOT NULL,
-                game          TEXT NOT NULL,
+                gameName VARCHAR(256) NOT NULL,
+                game TEXT NOT NULL,
                 PRIMARY KEY (gameID)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
             """,
             """
             CREATE TABLE IF NOT EXISTS auth (
                 authToken VARCHAR(256) NOT NULL,
-                username  VARCHAR(256) NOT NULL,
+                username VARCHAR(256) NOT NULL,
                 PRIMARY KEY (authToken)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
             """

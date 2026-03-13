@@ -9,7 +9,10 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import javax.xml.crypto.Data;
 import java.util.Collection;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class DataAccessTests {
 
@@ -26,28 +29,60 @@ public class DataAccessTests {
 
     @Test
     void clearTest() throws DataAccessException {
-
+        dataAccess.createUser(new UserData("jimmy", "abc123", "jimmy@gmail.com"));
+        dataAccess.createAuth(new AuthData("auth", "user"));
+        dataAccess.createGame("Game1");
+        dataAccess.clear();
+        assertNull(dataAccess.getUser("jimmy"));
+        assertNull(dataAccess.getAuth("auth"));
+        assertTrue(dataAccess.listGames().size() == 0);
     }
 
     @Test
-    void createUser(UserData user) throws DataAccessException {
-
+    void createUserValid() throws DataAccessException {
+        dataAccess.createUser(new UserData("jimmy", "abc123", "jimmy@gmail.com"));
+        assertNotNull(dataAccess.getUser("jimmy"));
+    }
+    @Test
+    void createUserFail() throws DataAccessException {
+        dataAccess.createUser(new UserData("jimmy", "abc123", "jimmy@gmail.com"));
+        assertThrows(DataAccessException.class , () ->  dataAccess.createUser(new
+                UserData("jimmy", "new", "new@gmail.com")));
     }
 
     @Test
-    void getUser(String username) throws DataAccessException {
-
+    void getUser() throws DataAccessException {
+        dataAccess.createUser(new UserData("jimmy", "abc123", "jimmy@gmail.com"));
+        assertNotNull(dataAccess.getUser("jimmy"));
+    }
+    @Test
+    void getUserFail() throws DataAccessException {
+        dataAccess.createUser(new UserData("jimmy", "abc123", "jimmy@gmail.com"));
+        assertNull(dataAccess.getUser("james"));
     }
 
     @Test
-    void createAuth(AuthData auth) throws DataAccessException {
-
+    void createAuth() throws DataAccessException {
+        dataAccess.createAuth(new AuthData("auth", "jimmy"));
+        assertNotNull(dataAccess.getAuth("auth"));
+    }
+    @Test
+    void createAuthFail() throws DataAccessException {
+        dataAccess.createAuth(new AuthData("auth", "jimmy"));
+        assertThrows(DataAccessException.class, () -> dataAccess.createAuth(new
+                AuthData("auth", "john")));
     }
 
     @Test
-    void getAuth(String authToken) throws DataAccessException {
-
+    void getAuth() throws DataAccessException {
+        dataAccess.createAuth(new AuthData("auth", "jimmy"));
+        assertNotNull(dataAccess.getAuth("auth"));
     }
+    @Test
+    void getAuthFail() throws DataAccessException {
+        assertNull(dataAccess.getAuth("auth"));
+    }
+
 
     @Test
     void deleteAuthToken(String authToken) throws DataAccessException {

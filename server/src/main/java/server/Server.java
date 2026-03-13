@@ -1,7 +1,8 @@
 package server;
 
 import com.google.gson.Gson;
-import dataaccess.CompMemDataAccess;
+import dataaccess.DataAccessException;
+import dataaccess.MYSQLDataAccess;
 import dataaccess.DataAccess;
 import io.javalin.*;
 import service.*;
@@ -10,9 +11,9 @@ public class Server {
 
     private final Javalin javalin;
 
-    public Server() {
+    public Server() throws DataAccessException {
         javalin = Javalin.create(config -> config.staticFiles.add("web"));
-        DataAccess dataAccess = new CompMemDataAccess();
+        DataAccess dataAccess = new MYSQLDataAccess();
         ClearService clearService = new ClearService(dataAccess);
         // Register your endpoints and exception handlers here.
         javalin.delete("/db", ctx -> {

@@ -4,6 +4,7 @@ import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
 import model.AuthData;
 import model.UserData;
+import org.mindrot.jbcrypt.BCrypt;
 
 public class LoginService {
     private DataAccess dataAccess;
@@ -22,7 +23,7 @@ public class LoginService {
             throw new BadRequest("Error: bad request");
         }
         if (user == null || request.password() == null
-                || !user.password().equals(request.password())) {
+                || !BCrypt.checkpw(request.password(), user.password())) {
             throw new Unauthorized("Error: unauthorized");
         }
         else {

@@ -30,31 +30,49 @@ public class DataAccessTests {
     }
 
     @Test
-    void createUser(UserData user) throws DataAccessException;
+    void createUser(UserData user) throws DataAccessException {
+
+    }
 
     @Test
-    UserData getUser(String username) throws DataAccessException;
+    void getUser(String username) throws DataAccessException {
+
+    }
 
     @Test
-    void createAuth(AuthData auth) throws DataAccessException;
+    void createAuth(AuthData auth) throws DataAccessException {
+
+    }
 
     @Test
-    AuthData getAuth(String authToken) throws DataAccessException;
+    void getAuth(String authToken) throws DataAccessException {
+
+    }
 
     @Test
-    void deleteAuthToken(String authToken) throws DataAccessException;
+    void deleteAuthToken(String authToken) throws DataAccessException {
+
+    }
 
     @Test
-    int createGame(String gameName) throws DataAccessException;
+    void createGame(String gameName) throws DataAccessException {
+
+    }
 
     @Test
-    GameData getGame(int gameId) throws DataAccessException;
+    void getGame() throws DataAccessException {
+
+    }
 
     @Test
-    Collection<GameData> listGames() throws DataAccessException;
+    void listGames() throws DataAccessException {
+
+    }
 
     @Test
-    void joinGame(String username, String playerColor, int gameID) throws DataAccessException;
+    void joinGame(String username, String playerColor, int gameID) throws DataAccessException {
+
+    }
 
 
 

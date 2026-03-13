@@ -8,6 +8,7 @@ import model.UserData;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.Collection;
 
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
@@ -33,7 +34,8 @@ public class MYSQLDataAccess implements DataAccess {
                 }
                 return 0;
             }
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             throw new DataAccessException("Unable to update database: " + e.getMessage());
         }
     }
@@ -57,7 +59,8 @@ public class MYSQLDataAccess implements DataAccess {
                     }
                 }
             }
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             throw new DataAccessException("Unable to read user: " + e.getMessage());
         }
         return null;
@@ -80,7 +83,8 @@ public class MYSQLDataAccess implements DataAccess {
                     }
                 }
             }
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             throw new DataAccessException("Unable to read auth: " + e.getMessage());
         }
         return null;
@@ -109,17 +113,18 @@ public class MYSQLDataAccess implements DataAccess {
                 ps.setInt(1, gameId);
                 try (ResultSet rs = ps.executeQuery()) {
                     if (rs.next()) {
-                        return readGame(rs);
+                        return readGameHelper(rs);
                     }
                 }
             }
-        } catch (SQLException e) {
-            throw new DataAccessException("Unable to read game: " + e.getMessage());
+        }
+        catch (SQLException e) {
+            throw new DataAccessException("Unable to get game: " + e.getMessage());
         }
         return null;
     }
 
-    private GameData readGame(ResultSet rs) throws SQLException {
+    private GameData readGameHelper(ResultSet rs) throws SQLException {
         int gameID = rs.getInt("gameID");
         String whiteUsername = rs.getString("whiteUsername");
         String blackUsername = rs.getString("blackUsername");
@@ -128,8 +133,23 @@ public class MYSQLDataAccess implements DataAccess {
         return new GameData(gameID, whiteUsername, blackUsername, gameName, game);
     }
 
-    Collection<GameData> listGames() throws DataAccessException{
-
+    public Collection<GameData> listGames() throws DataAccessException{
+        //return gameData.values();
+        ArrayList<GameData> gameList = new ArrayList<GameData>();
+        try (Connection conn = DatabaseManager.getConnection()) {
+            var statement = "INSERT INTO games (whiteUsername, blackUsername, gameName, game) VALUES (?, ?, ?, ?)";
+            try (PreparedStatement ps = conn.prepareStatement(statement)) {
+                try (ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        gameList.add(readGameHelper(rs));
+                    }
+                }
+            }
+        }
+        catch (SQLException e) {
+            throw new DataAccessException("Unable to list games: " + e.getMessage());
+        }
+        return gameList;
     }
 
     void joinGame(String username, String playerColor, int gameID) throws DataAccessException{

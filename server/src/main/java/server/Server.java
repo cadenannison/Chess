@@ -11,9 +11,14 @@ public class Server {
 
     private final Javalin javalin;
 
-    public Server() throws DataAccessException {
+    public Server() {
         javalin = Javalin.create(config -> config.staticFiles.add("web"));
-        DataAccess dataAccess = new MYSQLDataAccess();
+        DataAccess dataAccess;
+        try {
+            dataAccess = new MYSQLDataAccess();
+        } catch (DataAccessException e) {
+            throw new RuntimeException("Failed to initialize database: " + e.getMessage());
+        }
         ClearService clearService = new ClearService(dataAccess);
         // Register your endpoints and exception handlers here.
         javalin.delete("/db", ctx -> {

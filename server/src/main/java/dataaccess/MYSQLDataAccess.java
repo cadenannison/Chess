@@ -137,7 +137,7 @@ public class MYSQLDataAccess implements DataAccess {
         //return gameData.values();
         ArrayList<GameData> gameList = new ArrayList<GameData>();
         try (Connection conn = DatabaseManager.getConnection()) {
-            var statement = "INSERT INTO games (whiteUsername, blackUsername, gameName, game) VALUES (?, ?, ?, ?)";
+            var statement = "SELECT gameID, whiteUsername, blackUsername, gameName, game FROM games";
             try (PreparedStatement ps = conn.prepareStatement(statement)) {
                 try (ResultSet rs = ps.executeQuery()) {
                     while (rs.next()) {
@@ -152,8 +152,21 @@ public class MYSQLDataAccess implements DataAccess {
         return gameList;
     }
 
-    void joinGame(String username, String playerColor, int gameID) throws DataAccessException{
+    public void joinGame(String username, String playerColor, int gameID) throws DataAccessException{
+        if (playerColor.equals("WHITE")) {
+            var statement = "UPDATE games SET whiteUsername=? WHERE gameID=?";
+            executeUpdate(statement, username, gameID);
+        }
+        else {
+            var statement = "UPDATE games SET blackUsername=? WHERE gameID=?";
+            executeUpdate(statement, username, gameID);
+        }
+    }
 
+    public void clear() throws DataAccessException {
+        executeUpdate("TRUNCATE auth");
+        executeUpdate("TRUNCATE games");
+        executeUpdate("TRUNCATE users");
     }
 
     private final String[] createStatements = {

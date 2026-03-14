@@ -1,7 +1,5 @@
-package dataacess;
+package dataaccess;
 
-import dataaccess.DataAccessException;
-import dataaccess.MYSQLDataAccess;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
@@ -9,10 +7,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import javax.xml.crypto.Data;
-import java.util.Collection;
-
-import static chess.ChessGame.TeamColor.WHITE;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DataAccessTests {

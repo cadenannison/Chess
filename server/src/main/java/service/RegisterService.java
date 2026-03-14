@@ -4,6 +4,7 @@ import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
 import model.AuthData;
 import model.UserData;
+import org.mindrot.jbcrypt.BCrypt;
 
 public class RegisterService {
     private DataAccess dataAccess;
@@ -25,7 +26,10 @@ public class RegisterService {
         }
         else {
             //store the user request in a newUser record
-            UserData newUser = new UserData(request.username(), request.password(), request.email());
+            var hashedPassword = BCrypt.hashpw(request.password(), BCrypt.gensalt());
+
+            // 2. Store the user request in a newUser record WITH the hashed password
+            UserData newUser = new UserData(request.username(), hashedPassword, request.email());
             dataAccess.createUser(newUser);
             // make the auth key
             String authToken = java.util.UUID.randomUUID().toString();

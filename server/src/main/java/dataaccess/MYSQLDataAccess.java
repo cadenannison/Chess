@@ -24,9 +24,15 @@ public class MYSQLDataAccess implements DataAccess {
             try (PreparedStatement preparedStatement = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
                 for (int i = 0; i < params.length; i++) {
                     Object param = params[i];
-                    if (param instanceof String p)  preparedStatement.setString(i+1, p);
-                    else if (param instanceof Integer p) preparedStatement.setInt(i+1, p);
-                    else if (param == null) preparedStatement.setNull(i+1, NULL);
+                    if (param instanceof String p) {
+                        preparedStatement.setString(i+1, p);
+                    }
+                    else if (param instanceof Integer p) {
+                        preparedStatement.setInt(i+1, p);
+                    }
+                    else if (param == null) {
+                        preparedStatement.setNull(i+1, NULL);
+                    }
                 }
                 preparedStatement.executeUpdate();
                 ResultSet rs = preparedStatement.getGeneratedKeys();
@@ -97,11 +103,7 @@ public class MYSQLDataAccess implements DataAccess {
     }
 
     public int createGame(String gameName) throws DataAccessException{
-//        int gameID = incrementId++;
-//        // initializes the game
-//        GameData newGame = new GameData(gameID, null, null, gameName, new chess.ChessGame());
-//        gameData.put(gameID, newGame);
-//        return gameID;
+
         var statement = "INSERT INTO games (whiteUsername, blackUsername, gameName, game) VALUES (?, ?, ?, ?)";
         String json = new Gson().toJson(new chess.ChessGame());
         return executeUpdate(statement, null, null, gameName, json);

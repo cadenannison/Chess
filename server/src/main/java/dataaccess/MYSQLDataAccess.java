@@ -174,6 +174,7 @@ public class MYSQLDataAccess implements DataAccess {
         executeUpdate("TRUNCATE auth");
         executeUpdate("TRUNCATE games");
         executeUpdate("TRUNCATE users");
+        executeUpdate("ALTER TABLE games AUTO_INCREMENT = 1");
     }
 
     private final String[] createStatements = {

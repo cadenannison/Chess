@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import javax.xml.crypto.Data;
 import java.util.Collection;
 
+import static chess.ChessGame.TeamColor.WHITE;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DataAccessTests {
@@ -83,34 +84,66 @@ public class DataAccessTests {
         assertNull(dataAccess.getAuth("auth"));
     }
 
-
     @Test
-    void deleteAuthToken(String authToken) throws DataAccessException {
-
+    void deleteAuthToken() throws DataAccessException {
+        dataAccess.createAuth(new AuthData("auth", "jimmy"));
+        dataAccess.deleteAuthToken("auth");
+        assertNull(dataAccess.getAuth("auth"));
+    }
+    @Test
+    void deleteAuthTokenFail() throws DataAccessException {
+        dataAccess.createAuth(new AuthData("auth1", "jimmy"));
+        dataAccess.createAuth(new AuthData("auth2", "john"));
+        dataAccess.deleteAuthToken("auth1");
+        assertNotNull(dataAccess.getAuth("auth2"));
     }
 
-    @Test
-    void createGame(String gameName) throws DataAccessException {
 
+    @Test
+    void createGame() throws DataAccessException {
+        dataAccess.createGame("gameTest");
+        assertNotNull(dataAccess.getGame(1));
+    }
+    @Test
+    void createGameFail() throws DataAccessException {
+        assertThrows(DataAccessException.class, () -> dataAccess.createGame(null));
     }
 
     @Test
     void getGame() throws DataAccessException {
-
+        dataAccess.createGame("gameTest");
+        assertNotNull(dataAccess.getGame(1));
+    }
+    @Test
+    void getGameFail() throws DataAccessException {
+        dataAccess.createGame("gameTest");
+        assertNull(dataAccess.getGame(3));
     }
 
     @Test
     void listGames() throws DataAccessException {
-
+        dataAccess.createGame("gameTest1");
+        dataAccess.createGame("gameTest2");
+        dataAccess.createGame("gameTest3");
+        assertEquals(dataAccess.listGames().size(), 3);
     }
+    @Test
+    void listGamesFail() throws DataAccessException {
+        assertEquals(dataAccess.listGames().size(), 0);
+    }
+
 
     @Test
-    void joinGame(String username, String playerColor, int gameID) throws DataAccessException {
-
+    void joinGame() throws DataAccessException {
+        dataAccess.createUser(new UserData("jimmy", "abc123", "jimmy@gmail.com"));
+        dataAccess.createGame("game1");
+        dataAccess.joinGame("jimmy", "WHITE", 1);
+        GameData game = dataAccess.getGame(1);
+        assertEquals(game.whiteUsername(), "jimmy");
     }
-
-
-
-
-
+    @Test
+    void joinGameFail() throws DataAccessException {
+        assertThrows(DataAccessException.class, ()->
+                dataAccess.joinGame("jimmy", "WHITE", 6));
+    }
 }

@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
+import static java.sql.Types.NULL;
 
 public class MYSQLDataAccess implements DataAccess {
     public MYSQLDataAccess() throws DataAccessException {
@@ -25,7 +26,7 @@ public class MYSQLDataAccess implements DataAccess {
                     Object param = params[i];
                     if (param instanceof String p)  preparedStatement.setString(i + 1, p);
                     else if (param instanceof Integer p) preparedStatement.setInt(i + 1, p);
-                    else if (param == null) preparedStatement.setNull(i + 1, Types.NULL);
+                    else if (param == null) preparedStatement.setNull(i + 1, NULL);
                 }
                 preparedStatement.executeUpdate();
                 ResultSet rs = preparedStatement.getGeneratedKeys();
@@ -153,6 +154,10 @@ public class MYSQLDataAccess implements DataAccess {
     }
 
     public void joinGame(String username, String playerColor, int gameID) throws DataAccessException{
+        if (getGame(gameID) == null) {
+            throw new DataAccessException("Game doesn't exist");
+        }
+
         if (playerColor.equals("WHITE")) {
             var statement = "UPDATE games SET whiteUsername=? WHERE gameID=?";
             executeUpdate(statement, username, gameID);

@@ -26,4 +26,11 @@ public class ServerFacadeTests {
         Assertions.assertTrue(true);
     }
 
+    @Test
+    public static void newTest() {
+        server = new Server();
+        var port = server.run(0);
+        System.out.println("Started test HTTP server on " + port);
+    }
+
 }

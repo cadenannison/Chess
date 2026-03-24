@@ -27,7 +27,10 @@ public class ServerFacade {
     public record AuthData(String username, String authToken) {}
 
     public AuthData register(String username, String password, String email) throws Exception {
-
+        var body = new RegisterRequest(username, password, email);
+        var request = buildRequest("POST", "/user", body, null);
+        var response = sendRequest(request);
+        return handleResponse(response, AuthData.class);
     }
 
     private HttpRequest buildRequest(String method, String path, Object body, String authToken) {
@@ -72,12 +75,10 @@ public class ServerFacade {
         if (responseClass != null) {
             return new Gson().fromJson(response.body(), responseClass);
         }
-
         return null;
     }
 
     private boolean isSuccessful(int status) {
         return status / 100 == 2;
     }
-
 }

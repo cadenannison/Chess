@@ -1,6 +1,6 @@
 package client;
 
 public enum State {
-    LOGEDOUT,
-    LOGEDIN
+    SIGNEDOUT,
+    SIGNEDIN
 }

@@ -33,6 +33,15 @@ public class ServerFacade {
         return handleResponse(response, AuthData.class);
     }
 
+    private record LoginRequest(String username, String password) {}
+
+    public AuthData login(String username, String password) throws Exception {
+        var body = new LoginRequest(username, password);
+        var request = buildRequest("POST", "/session", body, null);
+        var response = sendRequest(request);
+        return handleResponse(response, AuthData.class);
+    }
+
     private HttpRequest buildRequest(String method, String path, Object body, String authToken) {
         var request = HttpRequest.newBuilder()
                 .uri(URI.create(serverUrl + path))

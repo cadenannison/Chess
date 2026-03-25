@@ -11,9 +11,8 @@ import static ui.EscapeSequences.*;
 public class ChessClient {
     private String authToken = null;
     private final ServerFacade server;
-    private State state = State.LOGEDOUT;
+    private State state = State.SIGNEDOUT;
     private List<GameData> games = new ArrayList<>();
-
 
     public ChessClient(String serverUrl) throws Exception {
         server = new ServerFacade(serverUrl);
@@ -31,7 +30,7 @@ public class ChessClient {
 
             try {
                 result = eval(line);
-                System.out.print(BLUE + result);
+                System.out.print(result);
             } catch (Throwable e) {
                 var msg = e.toString();
                 System.out.print(msg);
@@ -44,37 +43,47 @@ public class ChessClient {
         System.out.print("\n" + RESET + ">>> " + GREEN);
     }
 
-
     public String eval(String input) {
         try {
             String[] tokens = input.toLowerCase().split(" ");
             String cmd = (tokens.length > 0) ? tokens[0] : "help";
             String[] params = Arrays.copyOfRange(tokens, 1, tokens.length);
             return switch (cmd) {
-                case "login" -> login(params);
-                case "list games" -> listGames();
-                case "logout" -> signOut();
                 case "register" -> register(params);
-                case "logout" -> logout();
-                case "create" -> createGame(params);
-                case "join game" -> joinGame(params);
-                case "observe" -> observeGame(params);
-                case "help" -> help();
-                case "quit" -> "quit";
-                default -> help();
+                case "login"    -> login(params);
+                case "logout"   -> logout();
+                case "list"     -> listGames();
+                case "create"   -> createGame(params);
+                case "play"     -> playGame(params);
+                case "observe"  -> observeGame(params);
+                case "help"     -> help();
+                case "quit"     -> "quit";
+                default         -> help();
             };
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
             return ex.getMessage();
         }
     }
 
     public String login(String... params) throws Exception {
-        if (params.length >= 1) {
-            state = State.LOGEDIN;
-            authToken = String.join(params);
-            return String.format("You signed in as %s.", visitorName);
+        if (params.length == 2) {
+            var result = server.login(params[0], params[1]);
+            authToken = result.authToken();
+            state = State.SIGNEDIN;
+            return String.format("Logged in as %s.", result.username());
         }
-        throw new Exception(Exception, "Expected: <yourname>");
+        throw new Exception("Need: <username> <password>");
+    }
+
+    public String register(String... params) throws Exception {
+        if (params.length == 3) {
+            var result = server.register(params[0], params[1], params[2]);
+            authToken = result.authToken();
+            state = State.SIGNEDIN;
+            return String.format("Logged in as %s.", result.username());
+        }
+        throw new Exception("Expected: <username> <password> <email>");
     }
 
     public String signOut() throws Exception {

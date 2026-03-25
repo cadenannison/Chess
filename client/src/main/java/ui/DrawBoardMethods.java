@@ -1,6 +1,7 @@
 package ui;
 
 import chess.ChessBoard;
+import chess.ChessGame;
 import chess.ChessPiece;
 import chess.ChessPosition;
 
@@ -69,8 +70,48 @@ public class DrawBoardMethods {
     }
 
     private static String returnPiece(ChessPiece piece) {
-
+        if (piece.getPieceType() == ChessPiece.PieceType.KING) {
+            if (piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
+                return WHITE_KING;
+            } else {
+                return BLACK_KING;
+            }
+        }
+        if (piece.getPieceType() == ChessPiece.PieceType.QUEEN) {
+            if (piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
+                return WHITE_QUEEN;
+            } else {
+                return BLACK_QUEEN;
+            }
+        }
+        if (piece.getPieceType() == ChessPiece.PieceType.ROOK) {
+            if (piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
+                return WHITE_ROOK;
+            } else {
+                return BLACK_ROOK;
+            }
+        }
+        if (piece.getPieceType() == ChessPiece.PieceType.BISHOP) {
+            if (piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
+                return WHITE_BISHOP;
+            } else {
+                return BLACK_BISHOP;
+            }
+        }
+        if (piece.getPieceType() == ChessPiece.PieceType.PAWN) {
+            if (piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
+                return WHITE_PAWN;
+            } else {
+                return BLACK_PAWN;
+            }
+        }
+        if (piece.getPieceType() == ChessPiece.PieceType.KNIGHT) {
+            if (piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
+                return WHITE_KNIGHT;
+            } else {
+                return BLACK_KNIGHT;
+            }
+        }
+        return EMPTY;
     }
-
-
 }

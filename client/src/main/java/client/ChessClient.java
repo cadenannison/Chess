@@ -51,7 +51,7 @@ public class ChessClient {
             return switch (cmd) {
                 case "register" -> register(params);
                 case "login"    -> login(params);
-                case "logout"   -> logout(params);
+                case "logout"   -> logout();
                 case "list"     -> listGames();
                 case "create"   -> createGame(params);
                 case "play"     -> playGame(params);
@@ -89,19 +89,35 @@ public class ChessClient {
     public String logout() throws Exception {
         assertSignedIn();
         state = State.SIGNEDOUT;
-        return String.format("Signed out");
+        server.logout(authToken);
+        authToken = null;
+        return "Signed out";
     }
 
-    private GameData getGame(int gameId) throws Exception {
-        for (GameData game : server.listGames()) {
-            if (game.id() == id) {
-                return game;
-            }
+    public String createGame(String... params) throws Exception {
+        assertSignedIn();
+        if (params.length == 1) {
+            server.createGame(params[0], authToken);
+            return String.format("Created game: %s", params[0]);
         }
-        return null;
+        throw new Exception("Expected: <gameName>");
     }
 
-    public String help() {
+    public String listGames() throws Exception {
+
+    }
+
+    public String observeGame(String... params) throws Exception {
+
+    }
+
+    public String playGame(String... params) throws Exception {
+
+    }
+
+
+
+        public String help() {
         if (state == State.SIGNEDOUT) {
             return """
                     - login <yourname>
@@ -121,7 +137,7 @@ public class ChessClient {
 
     private void assertSignedIn() throws Exception {
         if (state == State.SIGNEDOUT) {
-            throw new Exception(Exception, "You must sign in");
+            throw new Exception("You gotta sign in");
         }
     }
 }

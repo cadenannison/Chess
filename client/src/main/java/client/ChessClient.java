@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Scanner;
 import model.GameData;
 
+import static chess.ChessGame.TeamColor.WHITE;
 import static java.lang.Integer.parseInt;
 import static ui.EscapeSequences.*;
 
@@ -125,12 +126,22 @@ public class ChessClient {
                 black = "available";
             }
             string.append((i + 1) + ". " + currentGame.gameName() +
-                    " | white: " + white + " | black: " + black + "\n");        }
+                 " | white: " + white + " | black: " + black + "\n");
+        }
         return string.toString();
     }
 
     public String observeGame(String... params) throws Exception {
-
+        assertSignedIn();
+        if (params.length == 1) {
+            int gameId = parseInt(params[0]);
+            gameId--;
+            if (gameId < 0 || gameId >= games.size()) {
+                throw new Exception("Bad game number please use 'list'");
+            }
+            return String.format("Observing game " + gameId+1 + "\n");
+        }
+        throw new Exception("Expected: <gameNumber>");
     }
 
     public String playGame(String... params) throws Exception {
@@ -139,13 +150,13 @@ public class ChessClient {
             int gameId = parseInt(params[0]);
             gameId--;
             //check if the bounds are ok
-            if (gameId < 0 || gameId > games.size()){
+            if (gameId < 0 || gameId >= games.size()){
                 throw new Exception("Bad game number. Please use 'list'");
             }
             int gameNum = games.get(gameId).gameID();
             String playerColor = params[1].toUpperCase();
             server.joinGame(authToken, playerColor, gameNum);
-            return String.format("Joined game " + gameId+1 + " as " + playerColor + "/n");
+            return String.format("Joined game " + gameId+1 + " as " + playerColor + "\n");
         }
         else {
             throw new Exception("Expected <gameNumber> <playerColor>");

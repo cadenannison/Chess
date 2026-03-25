@@ -51,7 +51,7 @@ public class ChessClient {
             return switch (cmd) {
                 case "register" -> register(params);
                 case "login"    -> login(params);
-                case "logout"   -> logout();
+                case "logout"   -> logout(params);
                 case "list"     -> listGames();
                 case "create"   -> createGame(params);
                 case "play"     -> playGame(params);
@@ -86,10 +86,10 @@ public class ChessClient {
         throw new Exception("Expected: <username> <password> <email>");
     }
 
-    public String signOut() throws Exception {
-        assertloggedin();
-        state = State.LOGEDOUT;
-        return String.format("%s left the shop", visitorName);
+    public String logout() throws Exception {
+        assertSignedIn();
+        state = State.SIGNEDOUT;
+        return String.format("Signed out");
     }
 
     private GameData getGame(int gameId) throws Exception {
@@ -102,7 +102,7 @@ public class ChessClient {
     }
 
     public String help() {
-        if (state == State.LOGEDOUT) {
+        if (state == State.SIGNEDOUT) {
             return """
                     - login <yourname>
                     - quit
@@ -120,7 +120,7 @@ public class ChessClient {
     }
 
     private void assertSignedIn() throws Exception {
-        if (state == State.LOGEDOUT) {
+        if (state == State.SIGNEDOUT) {
             throw new Exception(Exception, "You must sign in");
         }
     }

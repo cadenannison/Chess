@@ -2,12 +2,14 @@ package client;
 
 import com.google.gson.Gson;
 import model.AuthData;
+import model.GameData;
 
 import java.net.URI;
 import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.List;
 import java.util.Map;
 
 public class ServerFacade {
@@ -41,6 +43,41 @@ public class ServerFacade {
         var response = sendRequest(request);
         return handleResponse(response, AuthData.class);
     }
+
+    public void logout(String authToken) throws Exception {
+        var request = buildRequest("DELETE", "/session", null, authToken);
+        var response = sendRequest(request);
+        handleResponse(response, null);
+    }
+
+    private record CreateGameRequest(String gameName) {}
+    private record CreateGameResult(int gameID) {}
+
+    public void createGame(String authToken) throws Exception {
+
+    }
+
+    private record ListGamesResult(List<GameData> games) {}
+
+    public void listGames(String authToken) throws Exception {
+
+    }
+
+    private record JoinGameRequest(String playerColor, int gameID) {}
+
+    public void joinGame(String authToken) throws Exception {
+
+    }
+
+
+
+
+
+
+
+
+
+    //helpers for the other methods
 
     private HttpRequest buildRequest(String method, String path, Object body, String authToken) {
         var request = HttpRequest.newBuilder()

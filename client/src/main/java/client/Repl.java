@@ -1,12 +1,13 @@
 package client;
 
 public class Repl {
-    private final ServerFacade server;
+    private final ChessClient client;
 
-    public Repl(String serverUrl) {
-        this.server = new ServerFacade(serverUrl);
+    public Repl(String serverUrl) throws Exception{
+        this.client = new ChessClient(serverUrl);
     }
 
     public void run() {
+        client.run();
     }
 }

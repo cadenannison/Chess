@@ -1,21 +1,26 @@
 package client;
 
-import javax.swing.plaf.nimbus.State;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
+import model.GameData;
 
-import static java.awt.Color.BLUE;
+import static ui.EscapeSequences.*;
 
 public class ChessClient {
-    private String visitorName = null;
+    private String authToken = null;
     private final ServerFacade server;
-    private State state = State.SIGNEDOUT;
+    private State state = State.LOGEDOUT;
+    private List<GameData> games = new ArrayList<>();
+
 
     public ChessClient(String serverUrl) throws Exception {
         server = new ServerFacade(serverUrl);
     }
 
     public void run() {
-        System.out.println(LOGO + " Welcome to the pet store. Sign in to start.");
+        System.out.println("Welcome to Chess! Sign in to start.");
         System.out.print(help());
 
         Scanner scanner = new Scanner(System.in);
@@ -46,116 +51,68 @@ public class ChessClient {
             String cmd = (tokens.length > 0) ? tokens[0] : "help";
             String[] params = Arrays.copyOfRange(tokens, 1, tokens.length);
             return switch (cmd) {
-                case "signin" -> signIn(params);
-                case "rescue" -> rescuePet(params);
-                case "list" -> listPets();
-                case "signout" -> signOut();
-                case "adopt" -> adoptPet(params);
-                case "adoptall" -> adoptAllPets();
+                case "login" -> login(params);
+                case "list games" -> listGames();
+                case "logout" -> signOut();
+                case "register" -> register(params);
+                case "logout" -> logout();
+                case "create" -> createGame(params);
+                case "join game" -> joinGame(params);
+                case "observe" -> observeGame(params);
+                case "help" -> help();
                 case "quit" -> "quit";
                 default -> help();
             };
-        } catch (ResponseException ex) {
+        } catch (Exception ex) {
             return ex.getMessage();
         }
     }
 
-    public String signIn(String... params) throws ResponseException {
+    public String login(String... params) throws Exception {
         if (params.length >= 1) {
-            state = State.SIGNEDIN;
-            visitorName = String.join("-", params);
-            ws.enterPetShop(visitorName);
+            state = State.LOGEDIN;
+            authToken = String.join(params);
             return String.format("You signed in as %s.", visitorName);
         }
-        throw new ResponseException(ResponseException.Code.ClientError, "Expected: <yourname>");
+        throw new Exception(Exception, "Expected: <yourname>");
     }
 
-    public String rescuePet(String... params) throws ResponseException {
-        assertSignedIn();
-        if (params.length >= 2) {
-            String name = params[0];
-            PetType type = PetType.valueOf(params[1].toUpperCase());
-            var pet = new Pet(0, name, type);
-            pet = server.addPet(pet);
-            return String.format("You rescued %s. Assigned ID: %d", pet.name(), pet.id());
-        }
-        throw new ResponseException(ResponseException.Code.ClientError, "Expected: <name> <CAT|DOG|FROG>");
-    }
-
-    public String listPets() throws ResponseException {
-        assertSignedIn();
-        PetList pets = server.listPets();
-        var result = new StringBuilder();
-        var gson = new Gson();
-        for (Pet pet : pets) {
-            result.append(gson.toJson(pet)).append('\n');
-        }
-        return result.toString();
-    }
-
-    public String adoptPet(String... params) throws ResponseException {
-        assertSignedIn();
-        if (params.length == 1) {
-            try {
-                int id = Integer.parseInt(params[0]);
-                Pet pet = getPet(id);
-                if (pet != null) {
-                    server.deletePet(id);
-                    return String.format("%s says %s", pet.name(), pet.sound());
-                }
-            } catch (NumberFormatException ignored) {
-            }
-        }
-        throw new ResponseException(ResponseException.Code.ClientError, "Expected: <pet id>");
-    }
-
-    public String adoptAllPets() throws ResponseException {
-        assertSignedIn();
-        var buffer = new StringBuilder();
-        for (Pet pet : server.listPets()) {
-            buffer.append(String.format("%s says %s%n", pet.name(), pet.sound()));
-        }
-
-        server.deleteAllPets();
-        return buffer.toString();
-    }
-
-    public String signOut() throws ResponseException {
-        assertSignedIn();
-        ws.leavePetShop(visitorName);
-        state = State.SIGNEDOUT;
+    public String signOut() throws Exception {
+        assertloggedin();
+        state = State.LOGEDOUT;
         return String.format("%s left the shop", visitorName);
     }
 
-    private Pet getPet(int id) throws ResponseException {
-        for (Pet pet : server.listPets()) {
-            if (pet.id() == id) {
-                return pet;
+    private GameData getGame(int gameId) throws Exception {
+        for (GameData game : server.listGames()) {
+            if (game.id() == id) {
+                return game;
             }
         }
         return null;
     }
 
     public String help() {
-        if (state == State.SIGNEDOUT) {
+        if (state == State.LOGEDOUT) {
             return """
-                    - signIn <yourname>
+                    - login <yourname>
                     - quit
                     """;
         }
         return """
-                - list
-                - adopt <pet id>
-                - rescue <name> <CAT|DOG|FROG|FISH>
-                - adoptAll
-                - signOut
+                - list games
+                - create game
+                - join game
+                - observe
+                - logout
+                - help
                 - quit
                 """;
     }
 
-    private void assertSignedIn() throws ResponseException {
-        if (state == State.SIGNEDOUT) {
-            throw new ResponseException(ResponseException.Code.ClientError, "You must sign in");
+    private void assertSignedIn() throws Exception {
+        if (state == State.LOGEDOUT) {
+            throw new Exception(Exception, "You must sign in");
         }
     }
 }

@@ -163,20 +163,20 @@ public class ChessClient {
         }
     }
 
-
-
         public String help() {
         if (state == State.SIGNEDOUT) {
             return """
-                    - login <yourname>
+                    - register <username> <password> <email>
+                    - login <username> <password>
+                    - help
                     - quit
                     """;
         }
         return """
-                - list games
-                - create game
-                - join game
-                - observe
+                - list
+                - create <GameName>
+                - play <GameNumber> <WHITE | BLACK> 
+                - observe <GameNumber>
                 - logout
                 - help
                 - quit

@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
+
+import chess.ChessBoard;
 import model.GameData;
+import ui.DrawBoardMethods;
 
 import static java.lang.Integer.parseInt;
 import static ui.EscapeSequences.*;
@@ -139,7 +142,10 @@ public class ChessClient {
                 throw new Exception("Bad game number please use 'list'");
             }
             int displayNum = gameId + 1;
-            return "Observing game " + displayNum + "\n";
+            ChessBoard board = new ChessBoard();
+            board.resetBoard();
+            String boardString = DrawBoardMethods.draw(board, true);
+            return "Observing game " + displayNum + "\n" + boardString;
         }
         throw new Exception("Expected: <gameNumber>");
     }
@@ -157,7 +163,10 @@ public class ChessClient {
             String playerColor = params[1].toUpperCase();
             server.joinGame(authToken, playerColor, gameNum);
             int displayNum = gameId + 1;
-            return "Joined game " + displayNum + " as " + playerColor + "\n";
+            ChessBoard board = new ChessBoard();
+            board.resetBoard();
+            String boardString = DrawBoardMethods.draw(board, playerColor.equals("WHITE"));
+            return "Joined game " + displayNum + " as " + playerColor + "\n" + boardString;
         }
         else {
             throw new Exception("Expected <gameNumber> <playerColor>");

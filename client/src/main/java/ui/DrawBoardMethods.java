@@ -43,7 +43,7 @@ public class DrawBoardMethods {
                     boardAsString.append(SET_BG_COLOR_WHITE);
                 }
                 else {
-                    boardAsString.append(SET_BG_COLOR_BLACK);
+                    boardAsString.append(SET_BG_COLOR_DARK_GREY);
 
                 }
                 ChessPiece piece = board.getPiece(new ChessPosition(i, j));

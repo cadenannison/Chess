@@ -37,6 +37,7 @@ public class DrawBoardMethods {
         boardAsString.append(printLetterRow(colStart, colEnd, colDirection));
 
         for (int i = rowStart; i != rowEnd; i += rowDirection){
+            boardAsString.append(i + " ");
             for (int j = colStart; j != colEnd; j += colDirection){
                 if ((i+j) % 2 == 0){
                     boardAsString.append(SET_BG_COLOR_WHITE);
@@ -54,6 +55,7 @@ public class DrawBoardMethods {
                 }
                 boardAsString.append(RESET_BG_COLOR);
             }
+            boardAsString.append(i + " ");
         }
         boardAsString.append(printLetterRow(colStart, colEnd, colDirection));
         return boardAsString.toString();

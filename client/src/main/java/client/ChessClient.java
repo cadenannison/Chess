@@ -104,7 +104,28 @@ public class ChessClient {
     }
 
     public String listGames() throws Exception {
-
+        assertSignedIn();
+        games = server.listGames(authToken);
+        var string = new StringBuilder();
+        for (int i = 0; i < games.size(); i++) {
+            GameData currentGame = games.get(i);
+            String white;
+            if (currentGame.whiteUsername() != null) {
+                white = currentGame.whiteUsername();
+            }
+            else {
+                white = "available";
+            }
+            String black;
+            if (currentGame.blackUsername() != null) {
+                black = currentGame.blackUsername();
+            }
+            else {
+                black = "available";
+            }
+            string.append((i + 1) + ". " + currentGame.gameName() +
+                    " | white: " + white + " | black: " + black + "\n");        }
+        return string.toString();
     }
 
     public String observeGame(String... params) throws Exception {

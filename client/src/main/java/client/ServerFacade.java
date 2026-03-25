@@ -53,8 +53,11 @@ public class ServerFacade {
     private record CreateGameRequest(String gameName) {}
     private record CreateGameResult(int gameID) {}
 
-    public void createGame(String authToken) throws Exception {
-
+    public int createGame(String authToken, String gameName) throws Exception {
+        var body = new CreateGameRequest(gameName);
+        var request = buildRequest("POST", "/game", body, authToken);
+        var response = sendRequest(request);
+        return handleResponse(response, CreateGameResult.class).gameID();
     }
 
     private record ListGamesResult(List<GameData> games) {}

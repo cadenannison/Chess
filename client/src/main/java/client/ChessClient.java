@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Scanner;
 import model.GameData;
 
+import static java.lang.Integer.parseInt;
 import static ui.EscapeSequences.*;
 
 public class ChessClient {
@@ -133,7 +134,22 @@ public class ChessClient {
     }
 
     public String playGame(String... params) throws Exception {
-
+        assertSignedIn();
+        if (params.length == 2) {
+            int gameId = parseInt(params[0]);
+            gameId--;
+            //check if the bounds are ok
+            if (gameId < 0 || gameId > games.size()){
+                throw new Exception("Bad game number. Please use 'list'");
+            }
+            int gameNum = games.get(gameId).gameID();
+            String playerColor = params[1].toUpperCase();
+            server.joinGame(authToken, playerColor, gameNum);
+            return String.format("Joined game " + gameId+1 + " as " + playerColor + "/n");
+        }
+        else {
+            throw new Exception("Expected <gameNumber> <playerColor>");
+        }
     }
 
 

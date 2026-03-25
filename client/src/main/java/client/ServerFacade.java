@@ -26,7 +26,6 @@ public class ServerFacade {
     }
 
     private record RegisterRequest(String username, String password, String email) {}
-    public record AuthData(String username, String authToken) {}
 
     public AuthData register(String username, String password, String email) throws Exception {
         var body = new RegisterRequest(username, password, email);
@@ -62,23 +61,20 @@ public class ServerFacade {
 
     private record ListGamesResult(List<GameData> games) {}
 
-    public void listGames(String authToken) throws Exception {
-
+    public List<GameData> listGames(String authToken) throws Exception {
+        var request = buildRequest("GET", "/game", null, authToken);
+        var response = sendRequest(request);
+        return handleResponse(response, ListGamesResult.class).games();
     }
 
     private record JoinGameRequest(String playerColor, int gameID) {}
 
-    public void joinGame(String authToken) throws Exception {
-
+    public void joinGame(String authToken, String playerColor, int gameId) throws Exception {
+        var body = new JoinGameRequest(playerColor, gameId);
+        var request = buildRequest("PUT", "/game", body, authToken);
+        var response = sendRequest(request);
+        handleResponse(response, null);
     }
-
-
-
-
-
-
-
-
 
     //helpers for the other methods
 

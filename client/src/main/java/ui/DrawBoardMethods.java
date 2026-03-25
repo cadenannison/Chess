@@ -50,11 +50,13 @@ public class DrawBoardMethods {
                     boardAsString.append(EMPTY);
                 }
                 else {
-                    boardAsString.append(returnPiece()); //need to get piece here
+                    boardAsString.append(returnPiece(piece)); //need to get piece here
                 }
                 boardAsString.append(RESET_BG_COLOR);
             }
         }
+        boardAsString.append(printLetterRow(colStart, colEnd, colDirection));
+        return boardAsString.toString();
     }
 
     private static String printLetterRow(int colStart, int colEnd, int colDirection) {

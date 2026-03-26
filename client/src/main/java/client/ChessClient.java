@@ -135,6 +135,9 @@ public class ChessClient {
 
     public String observeGame(String... params) throws Exception {
         assertSignedIn();
+        if (games.isEmpty()) {
+            games = server.listGames(authToken);
+        }
         if (params.length == 1) {
             int gameId = parseInt(params[0]);
             gameId--;
@@ -152,6 +155,9 @@ public class ChessClient {
 
     public String playGame(String... params) throws Exception {
         assertSignedIn();
+        if (games.isEmpty()) {
+            games = server.listGames(authToken);
+        }
         if (params.length == 2) {
             int gameId = parseInt(params[0]);
             gameId--;

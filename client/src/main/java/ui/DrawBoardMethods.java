@@ -40,22 +40,27 @@ public class DrawBoardMethods {
             boardAsString.append(i + " ");
             for (int j = colStart; j != colEnd; j += colDirection){
                 if ((i+j) % 2 == 0){
-                    boardAsString.append(SET_BG_COLOR_WHITE);
+                    boardAsString.append(SET_BG_COLOR_DARK_GREY);
                 }
                 else {
-                    boardAsString.append(SET_BG_COLOR_DARK_GREY);
+                    boardAsString.append(SET_BG_COLOR_WHITE);
 
                 }
                 ChessPiece piece = board.getPiece(new ChessPosition(i, j));
-                if (piece == null){
+                if (piece == null) {
                     boardAsString.append(EMPTY);
-                }
-                else {
-                    boardAsString.append(returnPiece(piece)); //need to get piece here
+                } else {
+                    if (piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
+                        boardAsString.append(SET_TEXT_COLOR_WHITE);
+                    } else {
+                        boardAsString.append(SET_TEXT_COLOR_BLACK);
+                    }
+                    boardAsString.append(returnPiece(piece));
+                    boardAsString.append(RESET_TEXT_COLOR);
                 }
                 boardAsString.append(RESET_BG_COLOR);
             }
-            boardAsString.append(i + " ");
+            boardAsString.append(" " + i + "\n");
         }
         boardAsString.append(printLetterRow(colStart, colEnd, colDirection));
         return boardAsString.toString();

@@ -4,8 +4,7 @@ import model.AuthData;
 import org.junit.jupiter.api.*;
 import server.Server;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ServerFacadeTests {
 
@@ -46,11 +45,35 @@ public class ServerFacadeTests {
 
     @Test
     void loginFail() throws Exception {
-
+        facade.register("username", "password", "email");
+        assertThrows(Exception.class, () -> { facade.login("user", null);
+        });
     }
 
+    @Test
+    void logoutPositive() throws Exception {
+        AuthData user = facade.register("username", "password", "email");
+        assertDoesNotThrow(() -> facade.logout(user.authToken()));
+    }
 
+    @Test
+    void logoutFail() throws Exception {
+        AuthData user = facade.register("username", "password", "email");
+        assertThrows(Exception.class, () -> { facade.logout("Fake Auth");
+        });
+    }
 
+    @Test
+    void createGamePositive() throws Exception {
+        AuthData user = facade.register("username", "password", "email");
+        int gameId = facade.createGame(user.authToken(), "gameName");
+        assertNotNull(gameId);
+    }
+
+    @Test
+    void createGameFail() throws Exception {
+
+    }
 
 
     @AfterAll

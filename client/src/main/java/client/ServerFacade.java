@@ -126,4 +126,10 @@ public class ServerFacade {
     private boolean isSuccessful(int status) {
         return status / 100 == 2;
     }
+
+    public void clearDb() throws Exception {
+        var buildRequest = buildRequest("DELETE", "/db", null, null);
+        var response = sendRequest(buildRequest);
+        handleResponse(response, null);
+    }
 }

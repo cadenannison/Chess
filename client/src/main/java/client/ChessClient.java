@@ -204,5 +204,6 @@ public class ChessClient {
             throw new Exception("You gotta sign in");
         }
     }
+
 }
 

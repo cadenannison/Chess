@@ -72,9 +72,36 @@ public class ServerFacadeTests {
 
     @Test
     void createGameFail() throws Exception {
-
+        assertThrows(Exception.class, () -> { facade.createGame("fakeAuth", "gameName");
+        });
     }
 
+    @Test
+    void listGamesPositive() throws Exception {
+        AuthData user = facade.register("username", "password", "email");
+        assertDoesNotThrow(() -> facade.listGames(user.authToken()));
+    }
+
+    @Test
+    void listGamesNegative() throws Exception {
+        assertThrows(Exception.class, () -> { facade.listGames("fakeAuth");
+        });
+    }
+
+    @Test
+    void joinGamePositive() throws Exception {
+        AuthData user = facade.register("username", "password", "email");
+        int gameId = facade.createGame(user.authToken(), "gameName");
+        assertDoesNotThrow(() -> facade.joinGame(user.authToken(), "WHITE", gameId));
+    }
+
+    @Test
+    void joinGameNegative() throws Exception {
+        AuthData user = facade.register("username", "password", "email");
+        int gameId = facade.createGame(user.authToken(), "gameName");
+        assertThrows(Exception.class, () -> { facade.joinGame("fakeAuth", "WHITE", gameId);
+        });
+    }
 
     @AfterAll
     static void stopServer() {

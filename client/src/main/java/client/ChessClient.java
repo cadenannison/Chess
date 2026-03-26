@@ -44,8 +44,7 @@ public class ChessClient {
     }
 
     private void printPrompt() {
-        System.out.print("\n" + RESET_BG_COLOR + ">>> " + SET_TEXT_COLOR_BLUE);
-    }
+        System.out.print("\n" + RESET_TEXT_COLOR + RESET_BG_COLOR + ">>> " + SET_TEXT_COLOR_BLUE);    }
 
     public String eval(String input) {
         try {
@@ -54,15 +53,15 @@ public class ChessClient {
             String[] params = Arrays.copyOfRange(tokens, 1, tokens.length);
             return switch (cmd) {
                 case "register" -> register(params);
-                case "login"    -> login(params);
-                case "logout"   -> logout();
-                case "list"     -> listGames();
-                case "create"   -> createGame(params);
-                case "play"     -> playGame(params);
-                case "observe"  -> observeGame(params);
-                case "help"     -> help();
-                case "quit"     -> "quit";
-                default         -> help();
+                case "login" -> login(params);
+                case "logout" -> logout();
+                case "list" -> listGames();
+                case "create" -> createGame(params);
+                case "play" -> playGame(params);
+                case "observe" -> observeGame(params);
+                case "help" -> help();
+                case "quit" -> "quit";
+                default -> help();
             };
         }
         catch (Exception ex) {
@@ -102,6 +101,7 @@ public class ChessClient {
         assertSignedIn();
         if (params.length == 1) {
             server.createGame(authToken, params[0]);
+            games = server.listGames(authToken);
             return String.format("Created game: %s", params[0]);
         }
         throw new Exception("Expected: <gameName>");

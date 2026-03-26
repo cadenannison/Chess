@@ -94,7 +94,8 @@ public class ServerFacade {
     private HttpRequest.BodyPublisher makeRequestBody(Object request) {
         if (request != null) {
             return HttpRequest.BodyPublishers.ofString(new Gson().toJson(request));
-        } else {
+        }
+        else {
             return HttpRequest.BodyPublishers.noBody();
         }
     }
@@ -102,7 +103,8 @@ public class ServerFacade {
     private HttpResponse<String> sendRequest(HttpRequest request) throws Exception {
         try {
             return client.send(request, HttpResponse.BodyHandlers.ofString());
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
             throw new Exception(ex.getMessage());
         }
     }
@@ -120,7 +122,9 @@ public class ServerFacade {
         if (responseClass != null) {
             return new Gson().fromJson(response.body(), responseClass);
         }
-        return null;
+        else{
+            return null;
+        }
     }
 
     private boolean isSuccessful(int status) {

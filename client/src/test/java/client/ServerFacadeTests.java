@@ -67,7 +67,7 @@ public class ServerFacadeTests {
     void createGamePositive() throws Exception {
         AuthData user = facade.register("username", "password", "email");
         int gameId = facade.createGame(user.authToken(), "gameName");
-        assertNotNull(gameId);
+        assertTrue(gameId > 0);
     }
 
     @Test

@@ -36,7 +36,7 @@ public class ChessClient {
                 result = eval(line);
                 System.out.print(result);
             } catch (Throwable e) {
-                var msg = e.toString();
+                var msg = e.getMessage();
                 System.out.print(msg);
             }
         }
@@ -101,7 +101,7 @@ public class ChessClient {
         assertSignedIn();
         if (params.length == 1) {
             server.createGame(authToken, params[0]);
-            games = server.listGames(authToken);
+            games = server.listGames(authToken); //added this so that the games object autoupdates
             return String.format("Created game: %s", params[0]);
         }
         throw new Exception("Expected: <gameName>");

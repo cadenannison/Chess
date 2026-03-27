@@ -106,6 +106,10 @@ public class ChessClient {
         if (params.length == 1) {
             server.createGame(authToken, params[0]);
             games = server.listGames(authToken); //added this so that the games object autoupdates
+            gameListNumToId.clear();
+            for (int i = 0; i < games.size(); i++) {
+                gameListNumToId.put(i + 1, games.get(i).gameID());
+            }
             return String.format("Created game: %s", params[0]);
         }
         throw new Exception("Expected: <gameName>");
@@ -141,8 +145,11 @@ public class ChessClient {
 
     public String observeGame(String... params) throws Exception {
         assertSignedIn();
-        if (games.isEmpty()) {
+        if (gameListNumToId.isEmpty()) {
             games = server.listGames(authToken);
+            for (int i = 0; i < games.size(); i++) {
+                gameListNumToId.put(i + 1, games.get(i).gameID());
+            }
         }
         if (params.length == 1) {
             int listNum;
@@ -165,8 +172,11 @@ public class ChessClient {
 
     public String playGame(String... params) throws Exception {
         assertSignedIn();
-        if (games.isEmpty()) {
+        if (gameListNumToId.isEmpty()) {
             games = server.listGames(authToken);
+            for (int i = 0; i < games.size(); i++) {
+                gameListNumToId.put(i + 1, games.get(i).gameID());
+            }
         }
         if (params.length == 2) {
             int listNum;

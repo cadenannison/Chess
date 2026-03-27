@@ -18,6 +18,11 @@ public class ChessClient {
     private State state = State.SIGNEDOUT;
     private List<GameData> games = new ArrayList<>();
 
+    //create map/array for gameId vs order in list of game
+    // look for client error appending
+    // make gamelist number map to real game ID
+    // catch number format exception in play and observe game, print readable message to client here
+
     public ChessClient(String serverUrl) throws Exception {
         server = new ServerFacade(serverUrl);
     }

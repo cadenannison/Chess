@@ -114,7 +114,11 @@ public class ServerFacade {
         if (!isSuccessful(status)) {
             var body = response.body();
             if (body != null) {
-                throw new Exception(new Gson().fromJson(body, Map.class).get("message").toString());
+                String message = new Gson().fromJson(body, Map.class).get("message").toString();
+                if (message.startsWith("Error: ")) {
+                    message = message.substring(7);
+                }
+                throw new Exception(message);
             }
             throw new Exception("failure: " + status);
         }

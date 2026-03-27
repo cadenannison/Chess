@@ -1,9 +1,6 @@
 package client;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 import chess.ChessBoard;
 import model.GameData;
@@ -17,6 +14,8 @@ public class ChessClient {
     private final ServerFacade server;
     private State state = State.SIGNEDOUT;
     private List<GameData> games = new ArrayList<>();
+    private Map<Integer, Integer> gameListNumToId = new HashMap<>();
+
 
     //create map/array for gameId vs order in list of game
     // look for client error appending
@@ -115,9 +114,11 @@ public class ChessClient {
     public String listGames() throws Exception {
         assertSignedIn();
         games = server.listGames(authToken);
+        gameListNumToId.clear();
         var string = new StringBuilder();
         for (int i = 0; i < games.size(); i++) {
             GameData currentGame = games.get(i);
+            gameListNumToId.put(i + 1, currentGame.gameID());
             String white;
             if (currentGame.whiteUsername() != null) {
                 white = currentGame.whiteUsername();
@@ -133,7 +134,7 @@ public class ChessClient {
                 black = "available";
             }
             string.append((i + 1) + ". " + currentGame.gameName() +
-                 " | white: " + white + " | black: " + black + "\n");
+                    " | white: " + white + " | black: " + black + "\n");
         }
         return string.toString();
     }
@@ -144,16 +145,20 @@ public class ChessClient {
             games = server.listGames(authToken);
         }
         if (params.length == 1) {
-            int gameId = parseInt(params[0]);
-            gameId--;
-            if (gameId < 0 || gameId >= games.size()) {
+            int listNum;
+            try {
+                listNum = parseInt(params[0]);
+            }
+            catch (NumberFormatException e) {
+                return "'" + params[0] + "' is not a valid game number. Please enter a number from 'list'.";
+            }
+            if (!gameListNumToId.containsKey(listNum)) {
                 throw new Exception("Bad game number please use 'list'");
             }
-            int displayNum = gameId + 1;
             ChessBoard board = new ChessBoard();
             board.resetBoard();
             String boardString = DrawBoardMethods.draw(board, true);
-            return "Observing game " + displayNum + "\n" + boardString;
+            return "Observing game " + listNum + "\n" + boardString;
         }
         throw new Exception("Expected: <gameNumber>");
     }
@@ -164,20 +169,23 @@ public class ChessClient {
             games = server.listGames(authToken);
         }
         if (params.length == 2) {
-            int gameId = parseInt(params[0]);
-            gameId--;
-            //check if the bounds are ok
-            if (gameId < 0 || gameId >= games.size()){
+            int listNum;
+            try {
+                listNum = parseInt(params[0]);
+            }
+            catch (NumberFormatException e) {
+                return "'" + params[0] + "' is not a valid game number. Please enter a number from 'list'.";
+            }
+            if (!gameListNumToId.containsKey(listNum)) {
                 throw new Exception("Bad game number. Please use 'list'");
             }
-            int gameNum = games.get(gameId).gameID();
+            int gameNum = gameListNumToId.get(listNum);
             String playerColor = params[1].toUpperCase();
             server.joinGame(authToken, playerColor, gameNum);
-            int displayNum = gameId + 1;
             ChessBoard board = new ChessBoard();
             board.resetBoard();
             String boardString = DrawBoardMethods.draw(board, playerColor.equals("WHITE"));
-            return "Joined game " + displayNum + " as " + playerColor + "\n" + boardString;
+            return "Joined game " + listNum + " as " + playerColor + "\n" + boardString;
         }
         else {
             throw new Exception("Expected <gameNumber> <playerColor>");

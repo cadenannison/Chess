@@ -191,6 +191,9 @@ public class ChessClient {
             }
             int gameNum = gameListNumToId.get(listNum);
             String playerColor = params[1].toUpperCase();
+            if (!playerColor.equals("WHITE") && !playerColor.equals("BLACK")) {
+                throw new Exception("Expected <gameNumber> <white|black>");
+            }
             server.joinGame(authToken, playerColor, gameNum);
             ChessBoard board = new ChessBoard();
             board.resetBoard();

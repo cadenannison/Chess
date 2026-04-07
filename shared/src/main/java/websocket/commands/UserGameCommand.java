@@ -8,6 +8,8 @@ import java.util.Objects;
  * Note: You can add to this class, but you should not alter the existing
  * methods.
  */
+
+// make user game command function
 public class UserGameCommand {
 
     private final CommandType commandType;

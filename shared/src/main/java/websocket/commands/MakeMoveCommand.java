@@ -5,7 +5,7 @@ import chess.ChessMove;
 public class MakeMoveCommand extends UserGameCommand {
     private ChessMove move;
 
-    public ChessMove getChessMove(){
+    public ChessMove getMove(){
         return move;
     }
 

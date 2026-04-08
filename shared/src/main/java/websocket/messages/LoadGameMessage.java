@@ -1,17 +1,19 @@
 package websocket.messages;
 
+import chess.ChessGame;
+
 import java.nio.FloatBuffer;
 
 public class LoadGameMessage extends ServerMessage{
-    private String loadGameMessage;
+    private ChessGame game;
 
-    public String getLoadGameMessage() {
-        return loadGameMessage;
+    public ChessGame getChessGame() {
+        return game;
     }
 
-    public LoadGameMessage(String errorMessage) {
+    public LoadGameMessage(ChessGame game) {
         super(ServerMessageType.LOAD_GAME);
-        this.loadGameMessage = loadGameMessage;
+        this.game = game;
     }
 }
 

@@ -163,7 +163,49 @@ public class WebSocketHandler {
     }
 
     private void resign(Session session, UserGameCommand userGameCommand) throws IOException {
+        try{
+            var authorization = dataAccess.getAuth(userGameCommand.getAuthToken());
+            var gameData = dataAccess.getGame(userGameCommand.getGameID());
 
+            if (authorization == null) {
+                errorSender(session, "Error: Not Authorized");
+                return;
+            }
+            if (gameData == null) {
+                errorSender(session, "Error: wrong gameID");
+                return;
+            }
+
+            ChessGame game = gameData.game();
+            String username = authorization.username();
+            ChessGame.TeamColor playerColor = null;
+
+            if (username.equals(gameData.whiteUsername())) {
+                playerColor = ChessGame.TeamColor.WHITE;
+            }
+            else if (username.equals(gameData.blackUsername())) {
+                playerColor = ChessGame.TeamColor.BLACK;
+            }
+            if (playerColor == null) {
+                errorSender(session, "Error: Observers cant resign");
+                return;
+            }
+            if (game.isOver()) {
+                errorSender(session, "Error: The game has already ended.");
+                return;
+            }
+
+            game.setGameOver(true);
+            dataAccess.updateGame(gameData);
+
+            String message = username + " has resigned and now the game is over.";
+            connections.broadcast(gameData.gameID(), null, new NotificationMessage(message));
+
+
+        }
+        catch (Exception ex) {
+            errorSender(session, "Error: " + ex.getMessage());
+        }
     }
 
     private void leave(Session session, UserGameCommand userGameCommand) throws IOException {

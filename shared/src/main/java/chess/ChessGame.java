@@ -15,6 +15,7 @@ public class ChessGame {
 
     ChessBoard board;
     TeamColor teamTurn;
+    private boolean gameOver = false;
 
 //    board = new ChessBoard();
 //    board.resetBoard();
@@ -23,6 +24,14 @@ public class ChessGame {
         board = new ChessBoard();
         board.resetBoard();
         teamTurn = TeamColor.WHITE;
+    }
+
+    public boolean isOver() {
+        return gameOver;
+    }
+
+    public void setGameOver(boolean gameOver) {
+        this.gameOver = gameOver;
     }
 
     /**
@@ -224,10 +233,12 @@ public class ChessGame {
         Collection<ChessMove> moveList = allValidMoves(teamColor);
         if (isInCheck(teamColor) == false && moveList.isEmpty() == true) {
             return true;
-        }
-        else {
+        } else {
             return false;
-        }    }
+        }
+    }
+
+
 
     /**
      * Sets this game's chessboard with a given board

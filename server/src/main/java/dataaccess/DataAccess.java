@@ -17,6 +17,6 @@ public interface DataAccess {
     GameData getGame(int gameId) throws DataAccessException;
     Collection<GameData> listGames() throws DataAccessException;
     void joinGame(String username, String playerColor, int gameID) throws DataAccessException;
-
+    void updateGame(GameData game) throws DataAccessException;
 }
 

@@ -7,6 +7,7 @@ import model.GameData;
 import model.UserData;
 import org.mindrot.jbcrypt.BCrypt;
 
+import javax.xml.crypto.Data;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -153,6 +154,24 @@ public class MYSQLDataAccess implements DataAccess {
             throw new DataAccessException("Unable to list games: " + e.getMessage());
         }
         return gameList;
+    }
+
+    public void updateGame(GameData game) throws DataAccessException {
+        String sql = "UPDATE games SET whiteUsername=?, blackUsername=?, game=? WHERE gameID=?";
+        try (var conn = DatabaseManager.getConnection();
+             var ps = conn.prepareStatement(sql)) {
+            ps.setString(1, game.whiteUsername());
+            ps.setString(2, game.blackUsername());
+            ps.setString(3, new Gson().toJson(game.game()));
+            ps.setInt(4, game.gameID());
+            int rows = ps.executeUpdate();
+            if (rows == 0) {
+                throw new DataAccessException("Game isnt found");
+            }
+        }
+        catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
     public void joinGame(String username, String playerColor, int gameID) throws DataAccessException{

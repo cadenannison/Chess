@@ -61,6 +61,13 @@ public class CompMemDataAccess implements DataAccess {
         return gameData.values();
     }
 
+    public void updateGame(GameData game) throws DataAccessException {
+        if (!games.containsKey(game.gameID())) {
+            throw new DataAccessException("Game dont exist");
+        }
+        games.put(game.gameID(), game);
+    }
+
     public void joinGame(String username, String playerColor, int gameID) throws DataAccessException {
         GameData desiredGame = gameData.get(gameID);
         if (playerColor.equals("WHITE")){

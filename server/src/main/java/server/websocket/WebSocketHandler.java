@@ -1,20 +1,21 @@
 package server.websocket;
 
 import com.google.gson.Gson;
+import io.javalin.websocket.WsConnectContext;
+import io.javalin.websocket.WsConnectHandler;
+import io.javalin.websocket.WsMessageContext;
 
 import java.io.IOException;
 
-public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsCloseHandler {
+public class WebSocketHandler {
 
     private final ConnectionManager connections = new ConnectionManager();
 
-    @Override
     public void handleConnect(WsConnectContext ctx) {
         System.out.println("Websocket connected");
         ctx.enableAutomaticPings();
     }
 
-    @Override
     public void handleMessage(WsMessageContext ctx) {
         try {
             Action action = new Gson().fromJson(ctx.message(), Action.class);
@@ -46,13 +47,4 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         connections.remove(session);
     }
 
-    public void makeNoise(String petName, String sound) throws ResponseException {
-        try {
-            var message = String.format("%s says %s", petName, sound);
-            var notification = new Notification(Notification.Type.NOISE, message);
-            connections.broadcast(null, notification);
-        } catch (Exception ex) {
-            throw new ResponseException(ResponseException.Code.ServerError, ex.getMessage());
-        }
-    }
 }

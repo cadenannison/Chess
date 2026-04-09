@@ -5,6 +5,7 @@ import dataaccess.DataAccessException;
 import dataaccess.MYSQLDataAccess;
 import dataaccess.DataAccess;
 import io.javalin.*;
+import server.websocket.WebSocketHandler;
 import service.*;
 
 public class Server {
@@ -24,6 +25,7 @@ public class Server {
         //handlers that have exceptions attached
         UserHandler userHandler = new UserHandler(dataAccess);
         GameHandler gameHandler = new GameHandler(dataAccess);
+        server.websocket.WebSocketHandler webSocketHandler = new WebSocketHandler();
 
         javalin.delete("/db", gameHandler::clear);
         javalin.post("/user", userHandler::register);

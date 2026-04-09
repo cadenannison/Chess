@@ -2,10 +2,12 @@ package server.websocket;
 
 import com.google.gson.Gson;
 import dataaccess.DataAccess;
+import dataaccess.DataAccessException;
 import io.javalin.websocket.WsCloseContext;
 import io.javalin.websocket.WsConnectContext;
 import io.javalin.websocket.WsConnectHandler;
 import io.javalin.websocket.WsMessageContext;
+import model.GameData;
 import org.eclipse.jetty.server.Authentication;
 import websocket.commands.UserGameCommand;
 import javax.swing.*;
@@ -14,6 +16,9 @@ import static org.eclipse.jetty.util.PathWatcher.DirAction.ENTER;
 import static websocket.commands.UserGameCommand.CommandType.*;
 import static websocket.messages.ServerMessage.ServerMessageType.ERROR;
 import static websocket.messages.ServerMessage.ServerMessageType.LOAD_GAME;
+import org.eclipse.jetty.websocket.api.Session;
+import websocket.messages.LoadGameMessage;
+import websocket.messages.NotificationMessage;
 
 public class WebSocketHandler {
 
@@ -33,30 +38,63 @@ public class WebSocketHandler {
         try {
             UserGameCommand userGameCommand = new Gson().fromJson(ctx.message(), UserGameCommand.class);
             switch (userGameCommand.getCommandType()) {
-                case CONNECT -> handleConnect(ctx.session);
-                case MAKE_MOVE -> handleMakeMove(ctx.session);
-                case LEAVE -> handleLeave(ctx.session);
-                case RESIGN -> handleResign(ctx.session);
+                case CONNECT -> gameConnect(ctx.session, userGameCommand);
+                case MAKE_MOVE -> makeMove(ctx.session, userGameCommand);
+                case LEAVE -> leave(ctx.session, userGameCommand);
+                case RESIGN -> resign(ctx.session, userGameCommand);
             }
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
 
-    private void handleConnect() {
+    private void gameConnect(Session session, UserGameCommand userGameCommand) throws IOException {
+        try{
+            var authentication = dataAccess.getAuth(userGameCommand.getAuthToken());
+            if (authentication == null){
+                throw new Exception("Error: Not Authorized");
+            }
+            GameData gamedata = dataAccess.getGame(userGameCommand.getGameID());
+            if (gamedata == null){
+                throw new Exception("Error: Bad Game ID");
+            }
+            int gameId = userGameCommand.getGameID();
+            String username = authentication.username();
+            connections.add(gameId, session);
+
+            var loadMessage = new LoadGameMessage(gamedata.game());
+            connections.sendDirectMessage(gameId, session, loadMessage);
+
+            String message;
+            if (username.equals(gamedata.whiteUsername())) {
+                message = username + " joined the game as White";
+            }
+            else if (username.equals(gamedata.blackUsername())) {
+                message = username + " joined the game as Black";
+            }
+            else {
+                message = username + " joined the game as an observer";
+            }
+
+            NotificationMessage notification = new NotificationMessage(message);
+            connections.broadcast(gameId, session, notification);
+        }
+        catch (Exception e) {
+
+        }
+    }
+
+
+
+    private void makeMove(Session session, UserGameCommand userGameCommand) throws IOException {
 
     }
 
-    private void handleMakeMove() {
+    private void resign(Session session, UserGameCommand userGameCommand) throws IOException {
 
     }
 
-    private void handleResign() {
-
-    }
-
-    private void handleLeave() {
+    private void leave(Session session, UserGameCommand userGameCommand) throws IOException {
 
     }
 
@@ -64,18 +102,5 @@ public class WebSocketHandler {
         System.out.println("Websocket closed");
     }
 
-    private void connect(String visitorName, Session session) throws IOException {
-        connections.add(session);
-        var message = String.format("%s is in the shop", visitorName);
-        var notification = new Notification(Notification.Type.ARRIVAL, message);
-        connections.broadcast(session, notification);
-    }
-
-    private void exit(String visitorName, Session session) throws IOException {
-        var message = String.format("%s left the shop", visitorName);
-        var notification = new Notification(Notification.Type.DEPARTURE, message);
-        connections.broadcast(session, notification);
-        connections.remove(session);
-    }
 
 }

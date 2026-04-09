@@ -209,7 +209,31 @@ public class WebSocketHandler {
     }
 
     private void leave(Session session, UserGameCommand userGameCommand) throws IOException {
+        try {
+            var authorization = dataAccess.getAuth(userGameCommand.getAuthToken());
+            var gameData = dataAccess.getGame(userGameCommand.getGameID());
 
+            if (authorization == null) {
+                errorSender(session, "Error: Not Authorized");
+                return;
+            }
+            if (gameData == null) {
+                errorSender(session, "Error: wrong gameID");
+                return;
+            }
+            String username = authorization.username();
+            int gameId = gameData.gameID();
+
+            connections.remove(gameId, session);
+
+            String notification = username + " has left the game.";
+            connections.broadcast(gameId, session, new NotificationMessage(notification));
+
+
+        }
+        catch (Exception ex){
+            errorSender(session, "error: " + ex.getMessage());
+        }
     }
 
     public void handleClose(WsCloseContext ctx) {

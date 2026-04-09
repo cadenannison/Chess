@@ -1,18 +1,16 @@
 package server.websocket;
 
 import com.google.gson.Gson;
+import dataaccess.DataAccess;
 import io.javalin.websocket.WsCloseContext;
 import io.javalin.websocket.WsConnectContext;
 import io.javalin.websocket.WsConnectHandler;
 import io.javalin.websocket.WsMessageContext;
 import org.eclipse.jetty.server.Authentication;
 import websocket.commands.UserGameCommand;
-
 import javax.swing.*;
 import java.io.IOException;
-
 import static org.eclipse.jetty.util.PathWatcher.DirAction.ENTER;
-import static sun.tools.jconsole.Messages.EXIT;
 import static websocket.commands.UserGameCommand.CommandType.*;
 import static websocket.messages.ServerMessage.ServerMessageType.ERROR;
 import static websocket.messages.ServerMessage.ServerMessageType.LOAD_GAME;
@@ -20,6 +18,11 @@ import static websocket.messages.ServerMessage.ServerMessageType.LOAD_GAME;
 public class WebSocketHandler {
 
     private final ConnectionManager connections = new ConnectionManager();
+    private final DataAccess dataAccess;
+
+    public WebSocketHandler(DataAccess dataAccess) {
+        this.dataAccess = dataAccess;
+    }
 
     public void handleConnect(WsConnectContext ctx) {
         System.out.println("Websocket connected");
@@ -39,6 +42,22 @@ public class WebSocketHandler {
         catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
+
+    private void handleConnect() {
+
+    }
+
+    private void handleMakeMove() {
+
+    }
+
+    private void handleResign() {
+
+    }
+
+    private void handleLeave() {
+
     }
 
     public void handleClose(WsCloseContext ctx) {

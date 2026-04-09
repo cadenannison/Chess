@@ -25,7 +25,13 @@ public class Server {
         //handlers that have exceptions attached
         UserHandler userHandler = new UserHandler(dataAccess);
         GameHandler gameHandler = new GameHandler(dataAccess);
-        server.websocket.WebSocketHandler webSocketHandler = new WebSocketHandler();
+        server.websocket.WebSocketHandler webSocketHandler = new WebSocketHandler(dataAccess);
+
+        javalin.ws("/ws", ws -> {
+            ws.onConnect(webSocketHandler::handleConnect);
+            ws.onMessage(webSocketHandler::handleMessage);
+            ws.onClose(webSocketHandler::handleClose);
+        });
 
         javalin.delete("/db", gameHandler::clear);
         javalin.post("/user", userHandler::register);

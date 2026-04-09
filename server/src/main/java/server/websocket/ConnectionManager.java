@@ -31,6 +31,20 @@ public class ConnectionManager {
         connections.get(gameId).remove(session);
     }
 
+    public void sendDirectMessage(int gameId, Session specificSession, ServerMessage serverMessage) throws IOException {
+        var msg = new Gson().toJson(serverMessage);
+        if (connections.get(gameId) == null){
+            return;
+        }
+        for (Session c : connections.get(gameId)) {
+            if (c.isOpen()) {
+                if (c.equals(specificSession)) {
+                    c.getRemote().sendString(msg);
+                }
+            }
+        }
+    }
+
     public void broadcast(int gameId, Session excludeSession, ServerMessage serverMessage) throws IOException {
         var msg = new Gson().toJson(serverMessage);
         if (connections.get(gameId) == null){

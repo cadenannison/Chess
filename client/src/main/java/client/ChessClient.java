@@ -177,6 +177,8 @@ public class ChessClient implements NotificationHandler{
         ws.leaveGame(authToken, currentGameId);
         this.state = State.SIGNEDIN;
         this.ws = null;
+        this.currentGameId = null;
+        this.currentBoard = null;
         return "Left the game.";
     }
 

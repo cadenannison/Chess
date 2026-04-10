@@ -226,6 +226,17 @@ public class WebSocketHandler {
 
             connections.remove(gameId, session);
 
+            String white = gameData.whiteUsername();
+            String black = gameData.blackUsername();
+            if (username.equals(white)) {
+                white = null;
+            }
+            else if (username.equals(black)) {
+                black = null;
+            }
+            GameData updatedGame = new GameData(gameId, white, black, gameData.gameName(), gameData.game());
+            dataAccess.updateGame(updatedGame);
+
             String notification = username + " has left the game.";
             connections.broadcast(gameId, session, new NotificationMessage(notification));
         }

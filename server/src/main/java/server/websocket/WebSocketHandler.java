@@ -166,7 +166,7 @@ public class WebSocketHandler {
                     else {
                         msg = "Invalid move";
                     }
-            errorSender(session, ex.getMessage());
+            errorSender(session, msg);
         }
     }
 

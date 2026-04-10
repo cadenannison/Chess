@@ -138,7 +138,12 @@ public class WebSocketHandler {
             dataAccess.updateGame(gameData);
             System.out.println("Saved game, teamTurn is now: " + game.getTeamTurn());
             connections.broadcast(gameData.gameID(), null, new LoadGameMessage(game));
-            String playerMove = username + " moved to " + makeMoveCommand.getMove().toString();
+
+            chess.ChessMove move = makeMoveCommand.getMove();
+            String from = positionConverted(move.getStartPosition());
+            String to = positionConverted(move.getEndPosition());
+            String playerMove = username + " moved " + from + " to " + to;
+
             connections.broadcast(gameData.gameID(), session, new NotificationMessage(playerMove));
             ChessGame.TeamColor opponent;
             if (playerColor == ChessGame.TeamColor.WHITE) {
@@ -151,11 +156,23 @@ public class WebSocketHandler {
                 game.setGameOver(true);
                 dataAccess.updateGame(gameData);
                 connections.broadcast(gameData.gameID(), null,
-                        new NotificationMessage("Checkmate " + username + " wins the game!"));
+                        new NotificationMessage("Checkmate. " + username + " wins the game!"));
             }
             else if (game.isInCheck(opponent)) {
+                String opUser;
+
+                if (opponent == ChessGame.TeamColor.WHITE){
+                    opUser = gameData.whiteUsername();
+                }
+                else{
+                    opUser = gameData.blackUsername();
+                }
+                if (opUser == null){
+                    opUser = "opponent";
+                }
+
                 connections.broadcast(gameData.gameID(), null,
-                        new NotificationMessage("Check :)"));
+                        new NotificationMessage(username + " put " + opUser + " in check!!"));
             }
         }
         catch (Exception ex){
@@ -168,6 +185,11 @@ public class WebSocketHandler {
                     }
             errorSender(session, msg);
         }
+    }
+
+    private String positionConverted(chess.ChessPosition pos) {
+        char col = (char) ('a' -1 + pos.getColumn());
+        return "" + col + pos.getRow();
     }
 
     private void resign(Session session, UserGameCommand userGameCommand) throws IOException {

@@ -132,6 +132,10 @@ public class ChessClient implements NotificationHandler{
             return "Board hasnt loaded.";
         }
         chess.ChessPosition chessPos = new chess.ChessPosition(row, column);
+        chess.ChessPiece pieceAtPos = currentBoard.getPiece(chessPos);
+        if (pieceAtPos == null) {
+            return "No piece at " + position + ". Please pick a square that has a piece.";
+        }
         chess.ChessGame phantomGame = new chess.ChessGame();
         phantomGame.setBoard(currentBoard);
         var validMoves = phantomGame.validMoves(chessPos);

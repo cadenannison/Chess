@@ -17,6 +17,7 @@ public class ChessClient implements NotificationHandler{
     private List<GameData> games = new ArrayList<>();
     private Map<Integer, Integer> gameListNumToId = new HashMap<>();
     private WebsocketFacade ws;
+    private boolean whitePerspective = true;
 
     //create map/array for gameId vs order in list of game
     // look for client error appending
@@ -49,7 +50,25 @@ public class ChessClient implements NotificationHandler{
     }
 
     public void notify(ServerMessage notification) {
-
+        switch (notification.getServerMessageType()) {
+            case LOAD_GAME -> {
+                websocket.messages.LoadGameMessage loadMessage =
+                        (websocket.messages.LoadGameMessage) notification;
+                String boardString =
+                        DrawBoardMethods.draw(loadMessage.getChessGame().getBoard(), whitePerspective);
+                System.out.println("\n" + boardString);
+            }
+            case ERROR -> {
+                websocket.messages.ErrorMessage errorMessage = (websocket.messages.ErrorMessage) notification;
+                System.out.println("Error: " + errorMessage.getErrorMessage());
+            }
+            case NOTIFICATION -> {
+                websocket.messages.NotificationMessage notifMessage =
+                        (websocket.messages.NotificationMessage) notification;
+                System.out.println(notifMessage.getNotificationMessage());
+            }
+        }
+        printPrompt();
     }
 
     private void printPrompt() {
@@ -199,6 +218,7 @@ public class ChessClient implements NotificationHandler{
             if (!playerColor.equals("WHITE") && !playerColor.equals("BLACK")) {
                 throw new Exception("Expected <gameNumber> <white|black>");
             }
+            this.whitePerspective = playerColor.equals("WHITE");
             server.joinGame(authToken, playerColor, gameNum);
             ChessBoard board = new ChessBoard();
             board.resetBoard();

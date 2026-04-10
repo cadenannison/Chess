@@ -65,7 +65,7 @@ public class ChessClient implements NotificationHandler{
             }
             case ERROR -> {
                 websocket.messages.ErrorMessage errorMessage = (websocket.messages.ErrorMessage) notification;
-                System.out.println("Error: " + errorMessage.getErrorMessage());
+                System.out.println(errorMessage.getErrorMessage());
             }
             case NOTIFICATION -> {
                 websocket.messages.NotificationMessage notifMessage =

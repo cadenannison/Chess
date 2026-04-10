@@ -159,7 +159,14 @@ public class WebSocketHandler {
             }
         }
         catch (Exception ex){
-            errorSender(session, "Error: " + ex.getMessage());
+            String msg;
+                    if (ex.getMessage() != null) {
+                        msg = ex.getMessage();
+                    }
+                    else {
+                        msg = "Invalid move";
+                    }
+            errorSender(session, ex.getMessage());
         }
     }
 

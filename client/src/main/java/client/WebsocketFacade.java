@@ -4,6 +4,7 @@ import chess.ChessPiece;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonObject;
 import jakarta.websocket.*;
 import websocket.commands.MakeMoveCommand;
 import websocket.commands.UserGameCommand;
@@ -63,11 +64,16 @@ public class WebsocketFacade extends Endpoint{
 
     private Gson createGson() {
         GsonBuilder builder = new GsonBuilder();
-
-        builder.registerTypeAdapter(chess.ChessPiece.class,
-                (JsonDeserializer<ChessPiece>) (el, type, ctx) -> {
-            return ctx.deserialize(el, chess.ChessPiece.class);
-        });
+        builder.registerTypeAdapter(ServerMessage.class,
+                (JsonDeserializer<ServerMessage>) (el, type, ctx) -> {
+                    JsonObject jsonObject = el.getAsJsonObject();
+                    String msgType = jsonObject.get("serverMessageType").getAsString();
+                    return switch (msgType) {
+                        case "LOAD_GAME" -> ctx.deserialize(el, websocket.messages.LoadGameMessage.class);
+                        case "ERROR" -> ctx.deserialize(el, websocket.messages.ErrorMessage.class);
+                        default -> ctx.deserialize(el, websocket.messages.NotificationMessage.class);
+                    };
+                });
 
         return builder.create();
     }

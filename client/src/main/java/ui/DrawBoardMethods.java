@@ -10,10 +10,6 @@ import static ui.EscapeSequences.*;
 public class DrawBoardMethods {
 
     public static String draw(ChessBoard board, boolean whitePerspective) {
-        return draw(board, whitePerspective, null);
-    }
-
-    public static String draw(ChessBoard board, boolean whitePerspective) {
         var boardAsString = new StringBuilder();
         int rowStart;
         int rowEnd;

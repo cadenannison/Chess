@@ -233,7 +233,9 @@ public class MYSQLDataAccess implements DataAccess {
                 .enableComplexMapKeySerialization()
                 .serializeNulls()
                 .registerTypeAdapter(ChessPiece.class, (JsonDeserializer<ChessPiece>) (el, type, ctx) -> {
-                    if (el.isJsonNull()) return null;
+                    if (el.isJsonNull()) {
+                        return null;
+                    }
                     JsonObject obj = el.getAsJsonObject();
                     ChessGame.TeamColor color = ChessGame.TeamColor.valueOf(
                             obj.get("pieceColor").getAsString());

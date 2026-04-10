@@ -2,6 +2,7 @@ package dataaccess;
 
 import chess.ChessGame;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
@@ -106,7 +107,7 @@ public class MYSQLDataAccess implements DataAccess {
     public int createGame(String gameName) throws DataAccessException{
 
         var statement = "INSERT INTO games (whiteUsername, blackUsername, gameName, game) VALUES (?, ?, ?, ?)";
-        String json = new Gson().toJson(new chess.ChessGame());
+        String json = createGson().toJson(new chess.ChessGame());
         return executeUpdate(statement, null, null, gameName, json);
     }
 
@@ -133,7 +134,7 @@ public class MYSQLDataAccess implements DataAccess {
         String whiteUsername = rs.getString("whiteUsername");
         String blackUsername = rs.getString("blackUsername");
         String gameName = rs.getString("gameName");
-        ChessGame game = new Gson().fromJson(rs.getString("game"), ChessGame.class);
+        ChessGame game = createGson().fromJson(rs.getString("game"), ChessGame.class);
         return new GameData(gameID, whiteUsername, blackUsername, gameName, game);
     }
 
@@ -162,7 +163,7 @@ public class MYSQLDataAccess implements DataAccess {
              var ps = conn.prepareStatement(sql)) {
             ps.setString(1, game.whiteUsername());
             ps.setString(2, game.blackUsername());
-            ps.setString(3, new Gson().toJson(game.game()));
+            ps.setString(3, createGson().toJson(game.game()));
             ps.setInt(4, game.gameID());
             int rows = ps.executeUpdate();
             if (rows == 0) {
@@ -223,6 +224,13 @@ public class MYSQLDataAccess implements DataAccess {
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
             """
     };
+
+    private static Gson createGson() {
+        return new GsonBuilder()
+                .enableComplexMapKeySerialization()
+                .serializeNulls()
+                .create();
+    }
 
     private void configureDatabase() throws DataAccessException {
         DatabaseManager.createDatabase();

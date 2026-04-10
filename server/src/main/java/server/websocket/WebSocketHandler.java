@@ -136,6 +136,7 @@ public class WebSocketHandler {
         try {
             game.makeMove(makeMoveCommand.getMove());
             dataAccess.updateGame(gameData);
+            System.out.println("Saved game, teamTurn is now: " + game.getTeamTurn());
             connections.broadcast(gameData.gameID(), null, new LoadGameMessage(game));
             String playerMove = username + " moved to " + makeMoveCommand.getMove().toString();
             connections.broadcast(gameData.gameID(), session, new NotificationMessage(playerMove));

@@ -3,6 +3,7 @@ package dataaccess;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -21,14 +22,14 @@ public class CompMemDataAccess implements DataAccess {
     }
 
     public void createUser(UserData user) throws DataAccessException {
-        // need to check first if person exists
         if (userData.containsKey(user.username())) {
             throw new DataAccessException("This username already exists");
-        }
-        else {
-            userData.put(user.username(), user);
+        } else {
+            String hashedPassword = BCrypt.hashpw(user.password(), BCrypt.gensalt());
+            userData.put(user.username(), new UserData(user.username(), hashedPassword, user.email()));
         }
     }
+
     public UserData getUser(String username) throws DataAccessException {
         return userData.get(username);
     }

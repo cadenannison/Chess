@@ -205,6 +205,7 @@ public class ChessClient implements NotificationHandler{
         this.ws = null;
         this.currentGameId = null;
         this.currentBoard = null;
+        this.gameListNumToId.clear();
         return "Left the game.";
     }
 

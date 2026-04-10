@@ -117,7 +117,7 @@ public class ChessGame {
             throw new InvalidMoveException();
         }
 
-        Collection<ChessMove> moveList = currentPiece.pieceMoves(board, start); //get all possible moves for that piece
+        Collection<ChessMove> moveList = validMoves(start); //get all possible moves for that piece
 
         if (moveList.contains(move)) { // if the move passed in exists as a possibe move start move process
             ChessPiece capturedPiece = board.getPiece(end); // save whatever is at the end position

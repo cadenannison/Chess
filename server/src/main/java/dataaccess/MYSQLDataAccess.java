@@ -1,8 +1,11 @@
 package dataaccess;
 
 import chess.ChessGame;
+import chess.ChessPiece;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonObject;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
@@ -229,6 +232,15 @@ public class MYSQLDataAccess implements DataAccess {
         return new GsonBuilder()
                 .enableComplexMapKeySerialization()
                 .serializeNulls()
+                .registerTypeAdapter(ChessPiece.class, (JsonDeserializer<ChessPiece>) (el, type, ctx) -> {
+                    if (el.isJsonNull()) return null;
+                    JsonObject obj = el.getAsJsonObject();
+                    ChessGame.TeamColor color = ChessGame.TeamColor.valueOf(
+                            obj.get("pieceColor").getAsString());
+                    ChessPiece.PieceType pieceType = ChessPiece.PieceType.valueOf(
+                            obj.get("type").getAsString());
+                    return new ChessPiece(color, pieceType);
+                })
                 .create();
     }
 

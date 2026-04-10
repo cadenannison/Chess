@@ -18,6 +18,7 @@ public class ChessClient implements NotificationHandler{
     private Map<Integer, Integer> gameListNumToId = new HashMap<>();
     private WebsocketFacade ws;
     private boolean whitePerspective = true;
+    private final String serverUrl;
 
     //create map/array for gameId vs order in list of game
     // look for client error appending
@@ -25,6 +26,7 @@ public class ChessClient implements NotificationHandler{
     // catch number format exception in play and observe game, print readable message to client here
 
     public ChessClient(String serverUrl) throws Exception {
+        this.serverUrl = serverUrl;
         server = new ServerFacade(serverUrl);
     }
 
@@ -52,10 +54,9 @@ public class ChessClient implements NotificationHandler{
     public void notify(ServerMessage notification) {
         switch (notification.getServerMessageType()) {
             case LOAD_GAME -> {
-                websocket.messages.LoadGameMessage loadMessage =
-                        (websocket.messages.LoadGameMessage) notification;
-                String boardString =
-                        DrawBoardMethods.draw(loadMessage.getChessGame().getBoard(), whitePerspective);
+                websocket.messages.LoadGameMessage loadMessage = (websocket.messages.LoadGameMessage) notification;
+                ChessBoard board = loadMessage.getChessGame().getBoard();
+                String boardString = DrawBoardMethods.draw(board, whitePerspective);
                 System.out.println("\n" + boardString);
             }
             case ERROR -> {
@@ -186,10 +187,11 @@ public class ChessClient implements NotificationHandler{
             if (!gameListNumToId.containsKey(listNum)) {
                 throw new Exception("Bad game number please use 'list'");
             }
-            ChessBoard board = new ChessBoard();
-            board.resetBoard();
-            String boardString = DrawBoardMethods.draw(board, true);
-            return "Observing game " + listNum + "\n" + boardString;
+            int gameNum = gameListNumToId.get(listNum);
+            this.whitePerspective = true;
+            ws = new WebsocketFacade(serverUrl, this);
+            ws.joinGame(authToken, gameNum);
+            return "Now observing game " + listNum;
         }
         throw new Exception("Expected: <gameNumber>");
     }
@@ -220,10 +222,9 @@ public class ChessClient implements NotificationHandler{
             }
             this.whitePerspective = playerColor.equals("WHITE");
             server.joinGame(authToken, playerColor, gameNum);
-            ChessBoard board = new ChessBoard();
-            board.resetBoard();
-            String boardString = DrawBoardMethods.draw(board, playerColor.equals("WHITE"));
-            return "Joined game " + listNum + " as " + playerColor + "\n" + boardString;
+            ws = new WebsocketFacade(serverUrl, this);
+            ws.joinGame(authToken, gameNum);
+            return "Joined game " + listNum + " as " + playerColor;
         }
         else {
             throw new Exception("Expected <gameNumber> <playerColor>");

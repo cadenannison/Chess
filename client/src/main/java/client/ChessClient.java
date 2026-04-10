@@ -5,17 +5,18 @@ import java.util.*;
 import chess.ChessBoard;
 import model.GameData;
 import ui.DrawBoardMethods;
+import websocket.messages.ServerMessage;
 
 import static java.lang.Integer.parseInt;
 import static ui.EscapeSequences.*;
 
-public class ChessClient {
+public class ChessClient implements NotificationHandler{
     private String authToken = null;
     private final ServerFacade server;
     private State state = State.SIGNEDOUT;
     private List<GameData> games = new ArrayList<>();
     private Map<Integer, Integer> gameListNumToId = new HashMap<>();
-
+    private WebsocketFacade ws;
 
     //create map/array for gameId vs order in list of game
     // look for client error appending
@@ -45,6 +46,10 @@ public class ChessClient {
             }
         }
         System.out.println();
+    }
+
+    public void notify(ServerMessage notification) {
+
     }
 
     private void printPrompt() {

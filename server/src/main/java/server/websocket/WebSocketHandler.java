@@ -228,8 +228,6 @@ public class WebSocketHandler {
 
             String notification = username + " has left the game.";
             connections.broadcast(gameId, session, new NotificationMessage(notification));
-
-
         }
         catch (Exception ex){
             errorSender(session, "error: " + ex.getMessage());

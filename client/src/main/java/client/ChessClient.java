@@ -152,9 +152,15 @@ public class ChessClient implements NotificationHandler{
         return "Making move " + moveAsString;
     }
 
-    public String resign() throws Exception{
-        ws.resign(authToken, currentGameId);
-        return "Resignation attemped...";
+    public String resign() throws Exception {
+        System.out.print("Are you sure you want to resign? (yes/no): ");
+        Scanner confirmScanner = new Scanner(System.in);
+        String answer = confirmScanner.nextLine().trim().toLowerCase();
+        if (answer.equals("yes")) {
+            ws.resign(authToken, currentGameId);
+            return "Resignation sent.";
+        }
+        return "Resignation cancelled.";
     }
 
     public String login(String... params) throws Exception {
@@ -301,24 +307,34 @@ public class ChessClient implements NotificationHandler{
         }
     }
 
-        public String help() {
+    public String help() {
         if (state == State.SIGNEDOUT) {
             return """
-                    - register <username> <password> <email>
-                    - login <username> <password>
-                    - help
-                    - quit
-                    """;
-        }
-        return """
-                - list
-                - create <GameName>
-                - play <GameNumber> <WHITE | BLACK> 
-                - observe <GameNumber>
-                - logout
+                - register <username> <password> <email>
+                - login <username> <password>
                 - help
                 - quit
                 """;
+        }
+        if (state == State.PLAYINGGAME) {
+            return """
+                - redraw
+                - move <move> (ex. move a2a3 or move a7a8q for promotion)
+                - highlight <position> (i.e. highlight e6)
+                - resign
+                - leave
+                - help
+                """;
+        }
+        return """
+            - list
+            - create <GameName>
+            - play <GameNumber> <WHITE | BLACK>
+            - observe <GameNumber>
+            - logout
+            - help
+            - quit
+            """;
     }
 
     private void assertSignedIn() throws Exception {

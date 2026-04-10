@@ -3,6 +3,7 @@ package client;
 import java.util.*;
 
 import chess.ChessBoard;
+import chess.ChessMove;
 import model.GameData;
 import ui.DrawBoardMethods;
 import websocket.messages.ServerMessage;
@@ -20,6 +21,7 @@ public class ChessClient implements NotificationHandler{
     private boolean whitePerspective = true;
     private final String serverUrl;
     private Integer currentGameId = null;
+    private ChessBoard currentBoard;
 
     //create map/array for gameId vs order in list of game
     // look for client error appending
@@ -57,6 +59,7 @@ public class ChessClient implements NotificationHandler{
             case LOAD_GAME -> {
                 websocket.messages.LoadGameMessage loadMessage = (websocket.messages.LoadGameMessage) notification;
                 ChessBoard board = loadMessage.getChessGame().getBoard();
+                this.currentBoard = board;
                 String boardString = DrawBoardMethods.draw(board, whitePerspective);
                 System.out.println("\n" + boardString);
             }
@@ -85,6 +88,9 @@ public class ChessClient implements NotificationHandler{
             if (state == State.PLAYINGGAME) {
                 return switch (cmd) {
                     case "leave" -> leave();
+                    case "redraw" -> redrawBoard();
+                    case "make" -> makeMove(params);
+                    case "resign" -> resign();
                     case "help" -> help();
                     default -> "Unknown- Type 'help' for options.";
                 };
@@ -105,6 +111,50 @@ public class ChessClient implements NotificationHandler{
         catch (Exception ex) {
             return ex.getMessage();
         }
+    }
+
+    public String redrawBoard() throws Exception{
+        if (currentBoard == null) {
+            return "Board hasnt loaded yet";
+        }
+        return DrawBoardMethods.draw(currentBoard, whitePerspective);
+    }
+
+    public String makeMove(String... params) throws Exception{
+        if (params.length < 1){
+            throw new Exception("expected: (move) i.e. a2a6");
+        }
+        String moveAsString = params[0];
+        if (moveAsString.length() < 4) {
+            throw new Exception("Bad move Format");
+        }
+        int startColumn = moveAsString.charAt(0) - 'a' + 1;
+        int startRow = Character.getNumericValue(moveAsString.charAt(1));
+        int endColumn = moveAsString.charAt(2) - 'a' + 1;
+        int endRow = Character.getNumericValue(moveAsString.charAt(3));
+
+        chess.ChessPiece.PieceType promotionPiece = null;
+        if (moveAsString.length() == 5) {
+            char p = moveAsString.charAt(4);
+            switch (p) {
+                case 'q' -> promotionPiece = chess.ChessPiece.PieceType.QUEEN;
+                case 'r' -> promotionPiece = chess.ChessPiece.PieceType.ROOK;
+                case 'b' -> promotionPiece = chess.ChessPiece.PieceType.BISHOP;
+                case 'n' -> promotionPiece = chess.ChessPiece.PieceType.KNIGHT;
+                default -> promotionPiece = null;
+            };
+        }
+        chess.ChessPosition startPosition = new chess.ChessPosition(startRow, startColumn);
+        chess.ChessPosition endPosition = new chess.ChessPosition(endRow, endColumn);
+        chess.ChessMove move = new chess.ChessMove(startPosition, endPosition, promotionPiece);
+        var command = new websocket.commands.MakeMoveCommand(authToken, currentGameId, move);
+        ws.makeMove(command);
+        return "Making move " + moveAsString;
+    }
+
+    public String resign() throws Exception{
+        ws.resign(authToken, currentGameId);
+        return "Resignation attemped...";
     }
 
     public String login(String... params) throws Exception {

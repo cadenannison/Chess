@@ -89,7 +89,8 @@ public class ChessClient implements NotificationHandler{
                 return switch (cmd) {
                     case "leave" -> leave();
                     case "redraw" -> redrawBoard();
-                    case "make" -> makeMove(params);
+                    case "move" -> makeMove(params);
+                    case "highlight" -> highlight(params);
                     case "resign" -> resign();
                     case "help" -> help();
                     default -> "Unknown- Type 'help' for options.";
@@ -118,6 +119,31 @@ public class ChessClient implements NotificationHandler{
             return "Board hasnt loaded yet";
         }
         return DrawBoardMethods.draw(currentBoard, whitePerspective);
+    }
+
+    public String highlight(String... params) throws Exception {
+        if (params.length < 1) {
+            throw new Exception("Expected: highlight <position> (ex. e2)");
+        }
+        String position = params[0];
+        int column = position.charAt(0) - 'a' + 1;
+        int row = Character.getNumericValue(position.charAt(1));
+        if (currentBoard == null) {
+            return "Board hasnt loaded.";
+        }
+        chess.ChessPosition chessPos = new chess.ChessPosition(row, column);
+        chess.ChessGame phantomGame = new chess.ChessGame();
+        phantomGame.setBoard(currentBoard);
+        var validMoves = phantomGame.validMoves(chessPos);
+        var highlights = new java.util.ArrayList<chess.ChessPosition>();
+        highlights.add(chessPos);
+
+        if (validMoves != null) {
+            for (chess.ChessMove move : validMoves) {
+                highlights.add(move.getEndPosition());
+            }
+        }
+        return DrawBoardMethods.draw(currentBoard, whitePerspective, highlights);
     }
 
     public String makeMove(String... params) throws Exception{

@@ -9,66 +9,7 @@ import static ui.EscapeSequences.*;
 
 public class DrawBoardMethods {
 
-    public static String draw(ChessBoard board, boolean whitePerspective) {
-        var boardAsString = new StringBuilder();
-        int rowStart;
-        int rowEnd;
-        int rowDirection;
-        int colStart;
-        int colEnd;
-        int colDirection;
-
-        if (whitePerspective) {
-            rowStart = 8;
-            rowEnd = 0;
-            rowDirection = -1;
-            colStart = 1;
-            colEnd = 9;
-            colDirection = 1;
-        }
-        else {
-            rowStart = 1;
-            rowEnd = 9;
-            rowDirection = 1;
-            colStart = 8;
-            colEnd = 0;
-            colDirection = -1;
-        }
-        boardAsString.append(printLetterRow(colStart, colEnd, colDirection));
-
-        for (int i = rowStart; i != rowEnd; i += rowDirection) {
-            boardAsString.append(i + "   ");
-            for (int j = colStart; j != colEnd; j += colDirection) {
-                if ((i + j) % 2 == 0) {
-                    boardAsString.append(SET_BG_COLOR_DARK_GREY);
-                }
-                else {
-                    boardAsString.append(SET_BG_COLOR_WHITE);
-                }
-                ChessPiece piece = board.getPiece(new ChessPosition(i, j));
-                if (piece == null) {
-                    boardAsString.append(EMPTY);
-                }
-                else {
-                    if (piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
-                        boardAsString.append(SET_TEXT_COLOR_RED);
-                    }
-                    else {
-                        boardAsString.append(SET_TEXT_COLOR_BLUE);
-                    }
-                    boardAsString.append(returnPiece(piece));
-                    boardAsString.append(RESET_TEXT_COLOR);
-                }
-                boardAsString.append(RESET_BG_COLOR);
-            }
-            boardAsString.append("  " + i + "\n");
-        }
-        boardAsString.append(printLetterRow(colStart, colEnd, colDirection));
-        boardAsString.append(RESET_TEXT_COLOR);
-        boardAsString.append(RESET_BG_COLOR);
-        return boardAsString.toString();
-    }
-    //another draw method that accepts a spot for when i want to highlight the spaces
+    //draw method that accepts a spot for when i want to highlight the spaces
     public static String draw(ChessBoard board, boolean whitePerspective, Collection<ChessPosition> highlights) {
         var boardAsString = new StringBuilder();
         int rowStart;

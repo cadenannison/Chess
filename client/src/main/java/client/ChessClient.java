@@ -60,7 +60,7 @@ public class ChessClient implements NotificationHandler{
                 websocket.messages.LoadGameMessage loadMessage = (websocket.messages.LoadGameMessage) notification;
                 ChessBoard board = loadMessage.getChessGame().getBoard();
                 this.currentBoard = board;
-                String boardString = DrawBoardMethods.draw(board, whitePerspective);
+                String boardString = DrawBoardMethods.draw(board, whitePerspective, null);
                 System.out.println("\n" + boardString);
             }
             case ERROR -> {
@@ -118,7 +118,7 @@ public class ChessClient implements NotificationHandler{
         if (currentBoard == null) {
             return "Board hasnt loaded yet";
         }
-        return DrawBoardMethods.draw(currentBoard, whitePerspective);
+        return DrawBoardMethods.draw(currentBoard, whitePerspective, null);
     }
 
     public String highlight(String... params) throws Exception {

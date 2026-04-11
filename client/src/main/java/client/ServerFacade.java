@@ -110,7 +110,7 @@ public class ServerFacade {
 
     private <T> T handleResponse(HttpResponse<String> response, Class<T> responseClass) throws Exception {
         var status = response.statusCode();
-        if (!isSuccessful(status)) {
+        if (!(status / 100 == 2)) {
             var body = response.body();
             if (body != null) {
                 String message = new Gson().fromJson(body, Map.class).get("message").toString();
@@ -128,10 +128,6 @@ public class ServerFacade {
         else{
             return null;
         }
-    }
-
-    private boolean isSuccessful(int status) {
-        return status / 100 == 2;
     }
 
     public void clearDb() throws Exception {

@@ -162,6 +162,12 @@ public class ChessClient implements NotificationHandler{
         int startRow = Character.getNumericValue(moveAsString.charAt(1));
         int endColumn = moveAsString.charAt(2) - 'a' + 1;
         int endRow = Character.getNumericValue(moveAsString.charAt(3));
+        if (startRow > 8 || startRow < 1 ||
+                startColumn > 8 || startColumn < 1 ||
+                endRow > 8 || endRow < 1 ||
+                endColumn > 8 || endColumn < 1) {
+            throw new Exception("Move Format: 'col''row''col''row' i.e. b1c3");
+        }
 
         chess.ChessPiece.PieceType promotionPiece = null;
         if (moveAsString.length() == 5) {

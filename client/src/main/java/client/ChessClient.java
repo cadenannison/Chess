@@ -281,12 +281,7 @@ public class ChessClient implements NotificationHandler{
 
     public String observeGame(String... params) throws Exception {
         assertSignedIn();
-        if (gameListNumToId.isEmpty()) {
-            games = server.listGames(authToken);
-            for (int i = 0; i < games.size(); i++) {
-                gameListNumToId.put(i + 1, games.get(i).gameID());
-            }
-        }
+        loadGameList();
         if (params.length == 1) {
             int listNum;
             try {
@@ -309,14 +304,18 @@ public class ChessClient implements NotificationHandler{
         throw new Exception("Expected: <gameNumber>");
     }
 
-    public String playGame(String... params) throws Exception {
-        assertSignedIn();
+    private void loadGameList() throws Exception {
         if (gameListNumToId.isEmpty()) {
             games = server.listGames(authToken);
             for (int i = 0; i < games.size(); i++) {
                 gameListNumToId.put(i + 1, games.get(i).gameID());
             }
         }
+    }
+
+    public String playGame(String... params) throws Exception {
+        assertSignedIn();
+        loadGameList();
         if (params.length == 2) {
             int listNum;
             try {

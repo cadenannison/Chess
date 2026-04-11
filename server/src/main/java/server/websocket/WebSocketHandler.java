@@ -111,14 +111,9 @@ public class WebSocketHandler {
 
         ChessGame game = gameData.game();
         String username = authorization.username();
-        ChessGame.TeamColor playerColor = null;
 
-        if (username.equals(gameData.whiteUsername())) {
-            playerColor = ChessGame.TeamColor.WHITE;
-        }
-        else if (username.equals(gameData.blackUsername())) {
-            playerColor = ChessGame.TeamColor.BLACK;
-        }
+        ChessGame.TeamColor playerColor = getTeamColor(gameData.gameID(), session,
+                authorization.authToken(), username, gameData);
         if (playerColor == null) {
             errorSender(session, "Error: Observers cant make moves");
             return;
@@ -208,14 +203,9 @@ public class WebSocketHandler {
 
             ChessGame game = gameData.game();
             String username = authorization.username();
-            ChessGame.TeamColor playerColor = null;
 
-            if (username.equals(gameData.whiteUsername())) {
-                playerColor = ChessGame.TeamColor.WHITE;
-            }
-            else if (username.equals(gameData.blackUsername())) {
-                playerColor = ChessGame.TeamColor.BLACK;
-            }
+            ChessGame.TeamColor playerColor = getTeamColor(gameData.gameID(), session,
+                    userGameCommand.getAuthToken(), username, gameData);
             if (playerColor == null) {
                 errorSender(session, "Error: Observers cant resign");
                 return;
@@ -236,6 +226,17 @@ public class WebSocketHandler {
         catch (Exception ex) {
             errorSender(session, "Error: " + ex.getMessage());
         }
+    }
+
+    private ChessGame.TeamColor getTeamColor(int gameId, Session session, String authToken,
+                                             String username, GameData gameData) throws IOException {
+        ChessGame.TeamColor playerColor = null;
+        if (username.equals(gameData.whiteUsername())) {
+            playerColor = ChessGame.TeamColor.WHITE;
+        } else if (username.equals(gameData.blackUsername())) {
+            playerColor = ChessGame.TeamColor.BLACK;
+        }
+        return playerColor;
     }
 
     private void leave(Session session, UserGameCommand userGameCommand) throws IOException {
@@ -278,6 +279,7 @@ public class WebSocketHandler {
     public void handleClose(WsCloseContext ctx) {
         System.out.println("Websocket closed");
     }
+
 
 
 }

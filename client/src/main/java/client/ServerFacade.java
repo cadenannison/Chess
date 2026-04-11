@@ -79,8 +79,7 @@ public class ServerFacade {
     //helpers for the other methods
 
     private HttpRequest buildRequest(String method, String path, Object body, String authToken) {
-        var request = HttpRequest.newBuilder()
-                .uri(URI.create(serverUrl + path))
+        var request = HttpRequest.newBuilder().uri(URI.create(serverUrl + path))
                 .method(method, makeRequestBody(body));
         if (body != null) {
             request.setHeader("Content-Type", "application/json");
